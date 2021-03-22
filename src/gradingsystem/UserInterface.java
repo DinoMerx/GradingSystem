@@ -58,6 +58,7 @@ public class UserInterface {
         }
         
         public void UIGradingSystem(){
+            
             JLabel gslb1 = new JLabel("Grading System");
             JLabel gslb2 = new JLabel("Section : " + sd);
             
@@ -78,8 +79,9 @@ public class UserInterface {
             
             gs.setVisible(true);
             gs.setSize(300,300);
+            
+            gs.setLayout(null);
         }
-        
         public class UIGradingSystem implements ActionListener {
         @Override
             public void actionPerformed(ActionEvent e) {
