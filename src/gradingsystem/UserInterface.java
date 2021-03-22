@@ -21,6 +21,7 @@ public class UserInterface {
     //Menu Inputs
     JButton bm1 = new JButton("Edit Section");
     JButton bm2 = new JButton("Add Section");
+    JButton bm3 = new JButton("Grade Percentage");
     
     JComboBox section = new JComboBox();
     
@@ -33,7 +34,9 @@ public class UserInterface {
     String sd = "A66"; 
     
     JFrame f;
+    
         public void UIMenu(){
+            ConnectedSliders CSObject = new ConnectedSliders();
             f = new JFrame("Grading System");
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             f.setLayout(null);
@@ -45,13 +48,20 @@ public class UserInterface {
             
             bm1.setBounds(20,80,110,20);
             bm2.setBounds(150,80,110,20);
+            bm3.setBounds(70,110,140,20);
+            
             bm1.addActionListener(new UIGradingSystem());
+            
+
+            bm2.addActionListener(new CSObject.createAndShowGUI());
+            
 
             section.setBounds(85,50,110,20);
             
             f.add(mlb1);
             f.add(bm1);
             f.add(bm2);
+            f.add(bm3);
             f.add(section);
             
             f.setVisible(true);
@@ -59,7 +69,6 @@ public class UserInterface {
         }
         
         public void UIGradingSystem(){
-            
             JLabel gslb1 = new JLabel("Grading System");
             JLabel gslb2 = new JLabel("Section : " + sd);
             
@@ -78,10 +87,9 @@ public class UserInterface {
             gs.add(bgs3);
             gs.add(bgs4);
             
+            gs.setLayout(null);
             gs.setVisible(true);
             gs.setSize(300,300);
-            
-            gs.setLayout(null);
             
             gs.addWindowListener(new WindowAdapter() {
             @Override
@@ -94,7 +102,6 @@ public class UserInterface {
                 gs.remove(bgs3);
                 gs.remove(bgs4);
                 gs.removeWindowListener(this);
-                
             }
         });
             
