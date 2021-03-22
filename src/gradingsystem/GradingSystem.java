@@ -20,6 +20,6 @@ public class GradingSystem {
     
     public static void main(String[] args) {
         UserInterface UIObject = new UserInterface();
-        UIObject.Menu();
+        UIObject.UIMenu();
     }
 }

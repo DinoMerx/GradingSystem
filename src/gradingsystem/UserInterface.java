@@ -42,10 +42,11 @@ public class UserInterface {
             
             mlb1.setBounds(95,30,110,20);
             
-            bm1.addActionListener(new UIGradingSystem());
+            
             bm1.setBounds(20,80,110,20);
             bm2.setBounds(150,80,110,20);
-            
+            bm1.addActionListener(new UIGradingSystem());
+
             section.setBounds(85,50,110,20);
             
             f.add(mlb1);
@@ -81,12 +82,34 @@ public class UserInterface {
             gs.setSize(300,300);
             
             gs.setLayout(null);
+            
+            gs.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("WindowClosingDemo.windowClosing");
+                gs.remove(gslb1);
+                gs.remove(gslb2);
+                gs.remove(bgs1);
+                gs.remove(bgs2);
+                gs.remove(bgs3);
+                gs.remove(bgs4);
+                gs.removeWindowListener(this);
+                
+            }
+        });
+            
         }
         public class UIGradingSystem implements ActionListener {
         @Override
             public void actionPerformed(ActionEvent e) {
                 bm1 = (JButton)e.getSource();
-                UIGradingSystem();
+                UIGradingSystem();                     
     }
+            
+            
         }
+        
+        
+        
+    
 }
