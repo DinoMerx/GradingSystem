@@ -15,19 +15,7 @@ import javax.swing.event.ChangeListener;
 
 public class ConnectedSliders
 {
-    public static void main(String[] args)
-    {
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                createAndShowGUI();
-            }
-        });
-    }
-
-    private static void createAndShowGUI()
+    public void createAndShowGUI()
     {
         JSlider s0 = new JSlider(0, 100, 25);
         JSlider s1 = new JSlider(0, 100, 25);
@@ -52,7 +40,6 @@ public class ConnectedSliders
         panel.add(createListeningLabel(s0, s1, s2,s3));
 
         JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.getContentPane().add(panel);
         f.pack();
         f.setLocationRelativeTo(null);

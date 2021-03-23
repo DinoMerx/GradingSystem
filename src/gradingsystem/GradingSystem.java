@@ -5,8 +5,6 @@
  */
 package gradingsystem;
 
-import javax.swing.*;
-
 /**
  *
  * @author DinoMerx
