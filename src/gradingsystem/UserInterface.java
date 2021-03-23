@@ -36,7 +36,6 @@ public class UserInterface {
     JFrame f;
     
         public void UIMenu(){
-            ConnectedSliders CSObject = new ConnectedSliders();
             f = new JFrame("Grading System");
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             f.setLayout(null);
@@ -51,9 +50,7 @@ public class UserInterface {
             bm3.setBounds(70,110,140,20);
             
             bm1.addActionListener(new UIGradingSystem());
-            
-
-            bm2.addActionListener(new CSObject.createAndShowGUI());
+            bm3.addActionListener(new UISliders());
             
 
             section.setBounds(85,50,110,20);
@@ -110,13 +107,23 @@ public class UserInterface {
         @Override
             public void actionPerformed(ActionEvent e) {
                 bm1 = (JButton)e.getSource();
-                UIGradingSystem();                     
-    }
-            
-            
+                UIGradingSystem();
+            }
         }
         
-        
-        
-    
+        public class UISliders implements ActionListener {
+        @Override
+            public void actionPerformed(ActionEvent e) {
+                ConnectedSliders CSObject = new ConnectedSliders();
+                bm3 = (JButton)e.getSource();
+                SwingUtilities.invokeLater(new Runnable()
+        {
+                @Override
+                    public void run()
+                    {
+                        CSObject.createAndShowGUI();
+                    }
+                });
+            }
+        } 
 }
