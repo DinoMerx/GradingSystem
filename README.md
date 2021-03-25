@@ -9,6 +9,14 @@ The project is open to future features to make the purpose more efficient
  * Database Connection
 
 # Design
+![d1](https://user-images.githubusercontent.com/66121532/112418319-33309500-8d64-11eb-8efe-90c3fd4f4059.png)
+Section Slection and Main Grading System Design
+
+![d2](https://user-images.githubusercontent.com/66121532/112418322-3461c200-8d64-11eb-8946-07a1d885489d.png)
+Grade Percentage Slider Design
+
+![d3](https://user-images.githubusercontent.com/66121532/112418325-34fa5880-8d64-11eb-980f-1c74f8e916b2.png)
+Grade System
 
 # Screenshots
 ![1](https://user-images.githubusercontent.com/66121532/112416191-28740100-8d60-11eb-8269-49ccc23a156f.png)
