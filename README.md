@@ -6,3 +6,4 @@ The project is open to future features to make the purpose more efficient
 # Logs
  * Added User Interface
  * Seperated User Interface Class
+ * Database Connection
