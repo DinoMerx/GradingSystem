@@ -9,11 +9,11 @@ The project is open to future features to make the purpose more efficient
  * Database Connection
 
 # Screenshots
-Section Selection Screen 
 ![1](https://user-images.githubusercontent.com/66121532/112416191-28740100-8d60-11eb-8269-49ccc23a156f.png)
+Section Selection Screen 
 
-Main Screen of Grading System 
 ![2](https://user-images.githubusercontent.com/66121532/112416281-56594580-8d60-11eb-95fc-45dc6a569a42.png)
+Main Screen of Grading System 
 
-Grade Percentage Slider (always proportional to 100) 
 ![3](https://user-images.githubusercontent.com/66121532/112416284-578a7280-8d60-11eb-9b45-421e66c2be78.png)
+Grade Percentage Slider (always proportional to 100) 
