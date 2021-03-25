@@ -7,3 +7,8 @@ The project is open to future features to make the purpose more efficient
  * Added User Interface
  * Seperated User Interface Class
  * Database Connection
+
+#Screenshots
+![1](https://user-images.githubusercontent.com/66121532/112416191-28740100-8d60-11eb-8269-49ccc23a156f.png)
+![2](https://user-images.githubusercontent.com/66121532/112416281-56594580-8d60-11eb-95fc-45dc6a569a42.png)
+![3](https://user-images.githubusercontent.com/66121532/112416284-578a7280-8d60-11eb-9b45-421e66c2be78.png)
