@@ -8,6 +8,8 @@ The project is open to future features to make the purpose more efficient
  * Seperated User Interface Class
  * Database Connection
 
+# Design
+
 # Screenshots
 ![1](https://user-images.githubusercontent.com/66121532/112416191-28740100-8d60-11eb-8269-49ccc23a156f.png)
 Section Selection Screen 
