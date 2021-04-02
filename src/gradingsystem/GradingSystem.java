@@ -18,5 +18,9 @@ public class GradingSystem {
     public static void main(String[] args) {
         UserInterface UIObject = new UserInterface();
         UIObject.UIMenu();
+        
+        Database dbObject = new Database();
+        dbObject.db();
+        
     }
 }
