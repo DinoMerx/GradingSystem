@@ -8,7 +8,8 @@ package gradingsystem;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+import java.sql.Statement;
+import java.sql.ResultSet;
 /**
  *
  * @author DinoMerx
@@ -18,14 +19,23 @@ public class Database {
     String databaseURL = "jdbc:ucanaccess://src/resources/GradingSystem.accdb";
         
         try {
-            Connection connection = DriverManager.getConnection(databaseURL);
+            Connection connection = DriverManager.getConnection(databaseURL);  
+            Statement st = connection.createStatement();
             
-            System.out.println("Connected to MS Access database.");
+            String sql = "SELECT * From tblStudents";
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next())
+            {
+                String firstname = rs.getString("FirstName");
+                System.out.println(firstname);
+            }
+           
             
             connection.close();
             
         } catch (SQLException e) {
             e.printStackTrace();
+            
         }
     }
 }

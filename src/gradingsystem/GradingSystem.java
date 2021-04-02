@@ -22,5 +22,9 @@ public class GradingSystem {
         Database dbObject = new Database();
         dbObject.db();
         
+        
+        
+        
+    
     }
 }
