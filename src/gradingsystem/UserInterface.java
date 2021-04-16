@@ -26,7 +26,6 @@ public class UserInterface {
     //Menu Inputs
     JButton bm1 = new JButton("Edit Section");
     JButton bm2 = new JButton("Add Section");
-    JButton bm3 = new JButton("Grade Percentage");
     
     JComboBox section = new JComboBox();
     
@@ -52,11 +51,9 @@ public class UserInterface {
             
             bm1.setBounds(20,80,110,20);
             bm2.setBounds(150,80,110,20);
-            bm3.setBounds(70,110,140,20);
             
             bm1.addActionListener(new UIGradingSystem());
             bm2.addActionListener(new UIAddSection());
-            bm3.addActionListener(new UISliders());
             
 
             section.setBounds(85,50,110,20);
@@ -64,7 +61,7 @@ public class UserInterface {
             f.add(mlb1);
             f.add(bm1);
             f.add(bm2);
-            f.add(bm3);
+
             f.add(section);
             
             f.setVisible(true);
@@ -161,21 +158,6 @@ public class UserInterface {
             }
         }
         
-        public class UISliders implements ActionListener {
-        @Override
-            public void actionPerformed(ActionEvent e) {
-                ConnectedSliders CSObject = new ConnectedSliders();
-                bm3 = (JButton)e.getSource();
-                SwingUtilities.invokeLater(new Runnable()
-        {
-                @Override
-                    public void run()
-                    {
-                        CSObject.createAndShowGUI();
-                    }
-                });
-            }
-        }
         
         public class UIAddStudent implements ActionListener {
         @Override
