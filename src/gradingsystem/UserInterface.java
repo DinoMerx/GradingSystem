@@ -275,9 +275,39 @@ public class UserInterface {
         }
         
         public void UIAddGrade(){
+            ag.setLocationRelativeTo(null);
             ag.setLayout(null);
             ag.setVisible(true);
-            ag.setSize(300,200);
+            
+            JLabel text1 = new JLabel("Input Component:");
+            JTextField textfield1 = new JTextField("enter your text here.");
+            JButton submit = new JButton("Submit");
+            JButton cancel = new JButton("Cancel");
+            
+            textfield1.setBounds(150,10,120,20);
+            text1.setBounds(20,10,110,20);
+            submit.setBounds(60,40,80,20);
+            cancel.setBounds(150,40,80,20);
+                    
+            ag.setLayout(null);
+            ag.setSize(300,120);
+            ag.add(text1);
+            ag.add(textfield1);
+            ag.add(submit);
+            ag.add(cancel);
+            
+            ag.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("WindowClosingDemo.windowClosing");
+                ag.remove(text1);
+                ag.remove(textfield1);
+                ag.remove(submit);
+                ag.remove(cancel);
+                ag.removeWindowListener(this);
+                
+            }
+        });
         }
         
         public void UIEditGradeComponent(){
@@ -356,39 +386,7 @@ public class UserInterface {
         @Override
             public void actionPerformed(ActionEvent e) {
                 bgs2 = (JButton)e.getSource();
-                ag.setLocationRelativeTo(null);
-            ag.setLayout(null);
-            ag.setVisible(true);
             
-            JLabel text1 = new JLabel("Input Component:");
-            JTextField textfield1 = new JTextField("enter your text here.");
-            JButton submit = new JButton("Submit");
-            JButton cancel = new JButton("Cancel");
-            
-            textfield1.setBounds(150,10,120,20);
-            text1.setBounds(20,10,110,20);
-            submit.setBounds(60,40,80,20);
-            cancel.setBounds(150,40,80,20);
-                    
-            ag.setLayout(null);
-            ag.setSize(300,120);
-            ag.add(text1);
-            ag.add(textfield1);
-            ag.add(submit);
-            ag.add(cancel);
-            
-            ag.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.out.println("WindowClosingDemo.windowClosing");
-                ag.remove(text1);
-                ag.remove(textfield1);
-                ag.remove(submit);
-                ag.remove(cancel);
-                ag.removeWindowListener(this);
-                
-            }
-        });
                 UIAddGrade();
             }
         }
