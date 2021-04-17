@@ -17,7 +17,9 @@ import java.util.*;
 public class UserInterface {
     
     final JFrame gs = new JFrame("Grading System");
-    final JFrame as = new JFrame("Add Section");
+    final JFrame as1 = new JFrame("Add Section");
+    final JFrame as2 = new JFrame("Add Students");
+    final JFrame as3 = new JFrame("Add Students");
     final JFrame ast = new JFrame("Add Student");
     final JFrame ag = new JFrame("Add Grade");
     final JFrame egc = new JFrame("Edit Grade Component");
@@ -28,6 +30,27 @@ public class UserInterface {
     JButton bm2 = new JButton("Add Section");
     
     JComboBox section = new JComboBox();
+    
+    //Add Section Inputs
+    //1
+    JTextField asec = new JTextField(4);
+    JTextField asub = new JTextField(4);
+    
+    JButton bas1 = new JButton("Next");
+    JButton bas2 = new JButton("Cancle");
+    
+    //2
+    JButton bas11 = new JButton("Next");
+    JButton bas12 = new JButton("Cancle");
+    
+    JTextField assn = new JTextField(3);
+    
+    //3
+    JButton bas21 = new JButton("Next");
+    JButton bas22 = new JButton("Cancle");
+    
+    JTextField asid = new JTextField(10);
+    JTextField asfn = new JTextField(32);
     
     //GradingSystem Inputs
     JButton bgs1 = new JButton("Add Student");
@@ -47,7 +70,6 @@ public class UserInterface {
             JLabel mlb1 = new JLabel("Grading System");
             
             mlb1.setBounds(95,30,110,20);
-            
             
             bm1.setBounds(20,80,110,20);
             bm2.setBounds(150,80,110,20);
@@ -100,7 +122,6 @@ public class UserInterface {
             gs.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                System.out.println("WindowClosingDemo.windowClosing");
                 gs.remove(gslb1);
                 gs.remove(gslb2);
                 gs.remove(bgs1);
@@ -113,10 +134,126 @@ public class UserInterface {
             
         }
         
-        public void UIAddSection(){
-            as.setLayout(null);
-            as.setVisible(true);
-            as.setSize(300,200);
+        public void UIAddSection1(){
+            JLabel lblas = new JLabel("Add Section");
+            JLabel lblsec = new JLabel("Section:");
+            JLabel lblsub = new JLabel("Subject:");
+            
+            lblas.setBounds(95,30,110,20);
+            lblsec.setBounds(35,60,110,20);
+            lblsub.setBounds(35,90,110,20);
+            
+            asec.setBounds(95,60,110,20);
+            asub.setBounds(95,90,110,20);
+            
+            bas1.setBounds(50,120,80,20);
+            bas2.setBounds(150,120,80,20);
+            bas1.addActionListener(new UIAddSection1());
+            
+            as1.add(asec);
+            as1.add(asub);
+            as1.add(lblas);
+            as1.add(lblsec);
+            as1.add(lblsub);
+            as1.add(bas1);
+            as1.add(bas2);
+            
+            as1.setLayout(null);
+            as1.setVisible(true);
+            as1.setSize(300,200);
+            
+            as1.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                as1.remove(lblas);
+                as1.remove(lblsec);
+                as1.remove(lblsub);
+                as1.remove(bas1);
+                as1.remove(bas2);
+                as1.remove(asec);
+                as1.remove(asub);
+                as1.removeWindowListener(this);
+            }
+        });
+            
+        }
+        
+        public void UIAddSection2(){
+            JLabel lblas2 = new JLabel("Add Students");
+            JLabel lbldes1 = new JLabel("Enter Number of Students");
+            
+            lblas2.setBounds(100,30,110,20);
+            lbldes1.setBounds(65,45,200,20);
+            
+            bas11.setBounds(50,100,80,20);
+            bas12.setBounds(150,100,80,20);
+            bas11.addActionListener(new UIAddSection2());
+            
+            assn.setBounds(100,70,80,20);
+            
+            as2.add(lblas2);
+            as2.add(lbldes1);
+            as2.add(assn);
+            as2.add(bas11);
+            as2.add(bas12);
+            
+            as2.setLayout(null);
+            as2.setVisible(true);
+            as2.setSize(300,200);
+            
+            as2.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                as2.remove(lblas2);
+                as2.remove(lbldes1);
+                as2.remove(assn);
+                as2.remove(bas11);
+                as2.remove(bas12);
+                as2.removeWindowListener(this);
+            }
+        });
+        }
+        
+        public void UIAddSection3(){
+            JLabel lblas3 = new JLabel("Add Students");
+            JLabel lbldes2 = new JLabel("Enter Student Information");
+            JLabel lblid = new JLabel("StudentID:");
+            JLabel lblfn = new JLabel("Full Name:");
+            
+            lblid.setBounds(35,60,110,20);
+            lblfn.setBounds(35,90,110,20);
+            lblas3.setBounds(100,20,110,20);
+            lbldes2.setBounds(65,35,200,20);
+            
+            bas21.setBounds(50,120,80,20);
+            bas22.setBounds(150,120,80,20);
+            
+            asid.setBounds(95,60,150,20);
+            asfn.setBounds(95,90,150,20);
+            
+            as3.add(lblid);
+            as3.add(lblfn);
+            as3.add(asid);
+            as3.add(asfn);
+            as3.add(bas21);
+            as3.add(bas22);
+            as3.add(lblas3);
+            as3.add(lbldes2);
+                        
+            as3.setLayout(null);
+            as3.setVisible(true);
+            as3.setSize(300,200);
+            as2.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                as3.remove(lblas3);
+                as3.remove(lbldes2);
+                as3.remove(assn);
+                as3.remove(bas11);
+                as3.remove(bas12);
+                as3.removeWindowListener(this);
+            }
+        });
         }
         
         public void UIAddStudent(){
@@ -142,6 +279,7 @@ public class UserInterface {
             esg.setVisible(true);
             esg.setSize(300,200);
         }
+        
         public class UIGradingSystem implements ActionListener {
         @Override
             public void actionPerformed(ActionEvent e) {
@@ -154,10 +292,33 @@ public class UserInterface {
         @Override
             public void actionPerformed(ActionEvent e) {
                 bm2 = (JButton)e.getSource();
-                UIAddSection();
+                UIAddSection1();
             }
         }
         
+        public class UIAddSection1 implements ActionListener {
+        @Override
+            public void actionPerformed(ActionEvent e) {
+                bas1 = (JButton)e.getSource();
+                UIAddSection2();
+            }
+        }
+        
+        public class UIAddSection2 implements ActionListener {
+        @Override
+            public void actionPerformed(ActionEvent e) {
+                bas11 = (JButton)e.getSource();
+                UIAddSection3();
+            }
+        }
+        
+        public class UIAddSection3 implements ActionListener {
+        @Override
+            public void actionPerformed(ActionEvent e) {
+                bas21 = (JButton)e.getSource();
+                UIAddSection3();
+            }
+        }
         
         public class UIAddStudent implements ActionListener {
         @Override
