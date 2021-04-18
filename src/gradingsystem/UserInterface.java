@@ -7,6 +7,10 @@ package gradingsystem;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.beans.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -15,6 +19,10 @@ import java.util.*;
  */
 
 public class UserInterface {
+    String databaseURL = "jdbc:ucanaccess://src/resources/GradingSystem.accdb";
+    Database dbObject = new Database();
+    Connection con = null;
+    java.sql.Statement st = null;
     
     final JFrame gs = new JFrame("Grading System");
     final JFrame as1 = new JFrame("Add Section");
@@ -148,7 +156,32 @@ public class UserInterface {
             
             bas1.setBounds(50,120,80,20);
             bas2.setBounds(150,120,80,20);
-            bas1.addActionListener(new UIAddSection1());
+            
+            bas1.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                String tbl = "CREATE TABLE"+asec+asub+"("
+                    + "StudentID INT NOT NULL,"
+                    + "FullName(45) NOT NULL,"
+                    + "PRIMARY KEY (StudentID))";
+                
+            try {
+            
+                con = DriverManager.getConnection(databaseURL);
+                st = con.createStatement();
+                st.execute(tbl);
+                System.out.println("Table Created");
+                
+            } catch (SQLException t) {
+            
+                t.printStackTrace();
+            
+            }
+                
+                as1.dispose();
+            } 
+            });
             
             as1.add(asec);
             as1.add(asub);

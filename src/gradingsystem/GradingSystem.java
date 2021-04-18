@@ -20,7 +20,6 @@ public class GradingSystem {
         UIObject.UIMenu();
         
         Database dbObject = new Database();
-        dbObject.db();
         
         
         
