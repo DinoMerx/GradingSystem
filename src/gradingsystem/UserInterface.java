@@ -7,16 +7,12 @@ package gradingsystem;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-import java.beans.Statement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.*;
 /**
  *
  * @author DinoMerx
@@ -75,6 +71,7 @@ public class UserInterface {
     
     //Add Grade
     JButton submit = new JButton("Submit");
+    JTextField textfield1 = new JTextField("enter your input here.");
     
     String sd = "A66"; 
     
@@ -333,7 +330,6 @@ public class UserInterface {
             ag.setVisible(true);
             
             JLabel text1 = new JLabel("Input Component:");
-            JTextField textfield1 = new JTextField("enter your text here.");
             
             JButton cancel = new JButton("Cancel");
             
@@ -384,12 +380,30 @@ public class UserInterface {
         @Override
             public void actionPerformed(ActionEvent e) {
                 submit = (JButton)e.getSource();
+                /*
+                try {
+            
+                con = DriverManager.getConnection(databaseURL);
+                st = con.createStatement();
+                st.execute(tbl);
+                System.out.println("Table Created");
+                */
+                String columnName = textfield1.getText();
+                try
+                {
+                    //ResultSet resultSubmit = st.executeQuery(sql);
+                    con = DriverManager.getConnection(databaseURL);
+                    Statement submitST = con.createStatement();
+                    System.out.println("Submitted");  
+                    String submitsql = "ALTER TABLE test" 
+                                      +" ADD " + columnName + " integer";
+                    submitST.execute(submitsql);
+                    
+                } catch (SQLException E) 
+                {
+                    E.printStackTrace();
+                }
                 
-                
-                System.out.println("Submitted");
-                
-                String submitsql = "ALTER TABLE A66OJT"
-                                   + "ADD COLUMN textfield1 VARCHAR(20)";
             }   
         }
         
