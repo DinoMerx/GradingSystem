@@ -15,17 +15,25 @@ import java.sql.ResultSet;
  * @author DinoMerx
  */
 public class Database {
+
     public void db(){
-    String databaseURL = "jdbc:ucanaccess://src/resources/GradingSystem.accdb";
+        String databaseURL = "jdbc:ucanaccess://src/resources/GradingSystem.accdb";
+        
+        Connection con = null;
+        Statement st = null;
         
         try {
-            Connection connection = DriverManager.getConnection(databaseURL);  
-            Statement st = connection.createStatement();
-        
+            
+            con = DriverManager.getConnection(databaseURL);
+            st = con.createStatement();
+            
         } catch (SQLException e) {
+            
             e.printStackTrace();
             
         }
+        
+        
     }
 }
  
