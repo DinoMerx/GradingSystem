@@ -33,6 +33,8 @@ public class UserInterface {
     final JFrame egc = new JFrame("Edit Grade Component");
     final JFrame esg = new JFrame("Edit Student Grade");
     
+    
+    
     //Menu Inputs
     JButton bm1 = new JButton("Edit Section");
     JButton bm2 = new JButton("Add Section");
@@ -65,6 +67,8 @@ public class UserInterface {
     JButton bgs2 = new JButton("Add Grade");
     JButton bgs3 = new JButton("Edit Grade Component");
     JButton bgs4 = new JButton("Edit Student Grade");
+    JButton bgs5 = new JButton("Back");
+    
     
     String sd = "A66"; 
     
@@ -84,8 +88,7 @@ public class UserInterface {
             
             bm1.addActionListener(new UIGradingSystem());
             bm2.addActionListener(new UIAddSection());
-            
-
+           
             section.setBounds(85,50,110,20);
             
             f.add(mlb1);
@@ -109,19 +112,27 @@ public class UserInterface {
             bgs2.setBounds(60,110,160,20);
             bgs3.setBounds(60,140,160,20);
             bgs4.setBounds(60,170,160,20);
+            bgs5.setBounds(60,200,160,20);
             
             bgs1.addActionListener(new UIAddStudent());
             bgs2.addActionListener(new UIAddGrade());
             bgs3.addActionListener(new UIEditGradeComponent());
             bgs4.addActionListener(new UIEditStudentGrade());
-            
-            
+            bgs5.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                f.setVisible(true);
+                }
+            });
+                
             gs.add(gslb1);
             gs.add(gslb2);
             gs.add(bgs1);
             gs.add(bgs2);
             gs.add(bgs3);
             gs.add(bgs4);
+            gs.add(bgs5);
             
             gs.setLayout(null);
             gs.setVisible(true);
@@ -136,6 +147,7 @@ public class UserInterface {
                 gs.remove(bgs2);
                 gs.remove(bgs3);
                 gs.remove(bgs4);
+                gs.remove(bgs5);
                 gs.removeWindowListener(this);
             }
         });
@@ -296,9 +308,39 @@ public class UserInterface {
         }
         
         public void UIAddGrade(){
+            ag.setLocationRelativeTo(null);
             ag.setLayout(null);
             ag.setVisible(true);
-            ag.setSize(300,200);
+            
+            JLabel text1 = new JLabel("Input Component:");
+            JTextField textfield1 = new JTextField("enter your text here.");
+            JButton submit = new JButton("Submit");
+            JButton cancel = new JButton("Cancel");
+            
+            textfield1.setBounds(150,10,120,20);
+            text1.setBounds(20,10,110,20);
+            submit.setBounds(60,40,80,20);
+            cancel.setBounds(150,40,80,20);
+                    
+            ag.setLayout(null);
+            ag.setSize(300,120);
+            ag.add(text1);
+            ag.add(textfield1);
+            ag.add(submit);
+            ag.add(cancel);
+            
+            ag.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("WindowClosingDemo.windowClosing");
+                ag.remove(text1);
+                ag.remove(textfield1);
+                ag.remove(submit);
+                ag.remove(cancel);
+                ag.removeWindowListener(this);
+                
+            }
+        });
         }
         
         public void UIEditGradeComponent(){
@@ -313,9 +355,20 @@ public class UserInterface {
             esg.setSize(300,200);
         }
         
+        public class UIMenu implements ActionListener {
+        @Override
+            public void actionPerformed(ActionEvent e) {
+                bgs5 = (JButton)e.getSource();
+                f.setVisible(true);
+                gs.setVisible(false);
+                UIMenu();
+            }
+        }
+        
         public class UIGradingSystem implements ActionListener {
         @Override
             public void actionPerformed(ActionEvent e) {
+                f.setVisible(false);
                 bm1 = (JButton)e.getSource();
                 UIGradingSystem();
             }
@@ -324,6 +377,7 @@ public class UserInterface {
         public class UIAddSection implements ActionListener {
         @Override
             public void actionPerformed(ActionEvent e) {
+                f.setVisible(false);
                 bm2 = (JButton)e.getSource();
                 UIAddSection1();
             }
@@ -365,6 +419,7 @@ public class UserInterface {
         @Override
             public void actionPerformed(ActionEvent e) {
                 bgs2 = (JButton)e.getSource();
+            
                 UIAddGrade();
             }
         }
