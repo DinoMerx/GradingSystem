@@ -161,7 +161,7 @@ public class UserInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                String tbl = "CREATE TABLE"+asec+asub+"("
+                String tbl = "CREATE TABLE asecasub("
                     + "StudentID INT NOT NULL,"
                     + "FullName(45) NOT NULL,"
                     + "PRIMARY KEY (StudentID))";
