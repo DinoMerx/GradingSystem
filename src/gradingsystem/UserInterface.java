@@ -8,7 +8,11 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.*;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
 /**
  *
  * @author DinoMerx
@@ -61,6 +65,8 @@ public class UserInterface {
     JButton bgs4 = new JButton("Edit Student Grade");
     JButton bgs5 = new JButton("Back");
     
+    //Add Grade
+    JButton submit = new JButton("Submit");
     
     String sd = "A66"; 
     
@@ -80,7 +86,7 @@ public class UserInterface {
             
             bm1.addActionListener(new UIGradingSystem());
             bm2.addActionListener(new UIAddSection());
-           
+            
             section.setBounds(85,50,110,20);
             
             f.add(mlb1);
@@ -91,6 +97,19 @@ public class UserInterface {
             
             f.setVisible(true);
             f.setSize(300,200);
+            
+            gs.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                f.remove(mlb1);
+                f.remove(bm1);
+                f.remove(bm2);
+                f.remove(section);
+
+                f.removeWindowListener(this);
+            }
+        });
+            
         }
         
         public void UIGradingSystem(){
@@ -115,6 +134,7 @@ public class UserInterface {
                 public void actionPerformed(ActionEvent e)
                 {
                 f.setVisible(true);
+                gs.setVisible(false);
                 }
             });
                 
@@ -281,14 +301,16 @@ public class UserInterface {
             
             JLabel text1 = new JLabel("Input Component:");
             JTextField textfield1 = new JTextField("enter your text here.");
-            JButton submit = new JButton("Submit");
+            
             JButton cancel = new JButton("Cancel");
             
             textfield1.setBounds(150,10,120,20);
             text1.setBounds(20,10,110,20);
             submit.setBounds(60,40,80,20);
             cancel.setBounds(150,40,80,20);
-                    
+            
+            submit.addActionListener(new Submit());
+            
             ag.setLayout(null);
             ag.setSize(300,120);
             ag.add(text1);
@@ -296,9 +318,11 @@ public class UserInterface {
             ag.add(submit);
             ag.add(cancel);
             
-            ag.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
+            ag.addWindowListener(new WindowAdapter() 
+            {
+                @Override
+                public void windowClosing(WindowEvent e) 
+                {
                 System.out.println("WindowClosingDemo.windowClosing");
                 ag.remove(text1);
                 ag.remove(textfield1);
@@ -306,8 +330,9 @@ public class UserInterface {
                 ag.remove(cancel);
                 ag.removeWindowListener(this);
                 
-            }
-        });
+                }
+            });
+            
         }
         
         public void UIEditGradeComponent(){
@@ -320,6 +345,19 @@ public class UserInterface {
             esg.setLayout(null);
             esg.setVisible(true);
             esg.setSize(300,200);
+        }
+        
+        public class Submit implements ActionListener{
+        @Override
+            public void actionPerformed(ActionEvent e) {
+                submit = (JButton)e.getSource();
+                
+                
+                System.out.println("Submitted");
+                
+                String submitsql = "ALTER TABLE A66OJT"
+                                   + "ADD COLUMN textfield1 VARCHAR(20)";
+            }   
         }
         
         public class UIMenu implements ActionListener {
