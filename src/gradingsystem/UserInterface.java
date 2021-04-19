@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.*;
+import java.sql.DatabaseMetaData;
+import java.util.ArrayList;
 /**
  *
  * @author DinoMerx
@@ -23,6 +25,7 @@ public class UserInterface {
     Database dbObject = new Database();
     Connection con = null;
     PreparedStatement st = null;
+    String driverName = "com.mysql.jdbc.Driver";
     
     // JFrames
     final JFrame gs = new JFrame("Grading System");
@@ -40,7 +43,11 @@ public class UserInterface {
     JButton bm1 = new JButton("Edit Section");
     JButton bm2 = new JButton("Add Section");
     
-    JComboBox section = new JComboBox();
+    
+    String country[]={"A01","A02","A03","B01","B02","B03","C01","C02","C03","D01"};        
+    JComboBox section = new JComboBox(country);    
+    
+
     
     //Add Section Inputs
     //1
@@ -64,6 +71,8 @@ public class UserInterface {
     JTextField asfn = new JTextField(32);
     
     //GradingSystem Inputs
+    JLabel gslb1 = new JLabel("Grading System");
+    
     JButton bgs1 = new JButton("Add Student");
     JButton bgs2 = new JButton("Add Grade");
     JButton bgs3 = new JButton("Edit Grade Component");
@@ -75,7 +84,16 @@ public class UserInterface {
     JTextField textfield1 = new JTextField("enter your input here.");
     JButton cancel = new JButton("Cancel");
     
+    //Edit Grade Component
+    
+    JComboBox tableList = new JComboBox();
+    
     String sd = "A66"; 
+        
+
+            
+        
+
     
     JFrame f;
     // UIMenu, aka the main screen
@@ -121,9 +139,8 @@ public class UserInterface {
         }
         //Second screen when you click edit section
         public void UIGradingSystem(){
-            JLabel gslb1 = new JLabel("Grading System");
-            JLabel gslb2 = new JLabel("Section : " + sd);
             
+            JLabel gslb2 = new JLabel("Section : " + sd);
             gslb1.setBounds(95,30,110,20);
             gslb2.setBounds(105,50,110,20);
             
@@ -143,6 +160,7 @@ public class UserInterface {
                 {
                 f.setVisible(true);
                 gs.setVisible(false);
+                gs.remove(gslb2);
                 }
             });
             gs.setLocationRelativeTo(null);   
@@ -208,9 +226,7 @@ public class UserInterface {
             } catch (SQLException t) {
             
                 t.printStackTrace();
-            
-            }
-                
+            }   
                 as1.dispose();
             } 
             });
@@ -378,6 +394,12 @@ public class UserInterface {
         }
         
         public void UIEditGradeComponent(){
+            
+            
+            
+            egc.add(tableList);
+            tableList.setBounds(20,10,110,20);
+            
             egc.setLayout(null);
             egc.setVisible(true);
             egc.setSize(800,720);
@@ -426,8 +448,12 @@ public class UserInterface {
         @Override
             public void actionPerformed(ActionEvent e) {
                 bgs5 = (JButton)e.getSource();
-                f.setVisible(true);
-                gs.setVisible(false);
+                
+                gs.remove(bgs1);
+                gs.remove(bgs2);
+                gs.remove(bgs3);
+                gs.remove(bgs4);
+                gs.remove(bgs5);
                 UIMenu();
             }
         }
