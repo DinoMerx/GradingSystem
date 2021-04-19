@@ -44,8 +44,8 @@ public class UserInterface {
     JButton bm2 = new JButton("Add Section");
     
     
-    String country[]={"A01","A02","A03","B01","B02","B03","C01","C02","C03","D01"};        
-    JComboBox section = new JComboBox(country);    
+    String section[]={"A01","A02","A03","B01","B02","B03","C01","C02","C03","D01"};        
+      
     
 
     
@@ -90,8 +90,8 @@ public class UserInterface {
     
     String sd = "A66"; 
         
-
-            
+    JComboBox sectionList = new JComboBox(section);     
+    String selectedSection;  
         
 
     
@@ -105,6 +105,8 @@ public class UserInterface {
             
             JLabel mlb1 = new JLabel("Grading System");
             
+            
+            
             mlb1.setBounds(95,30,110,20);
             
             bm1.setBounds(20,80,110,20);
@@ -113,16 +115,17 @@ public class UserInterface {
             bm1.addActionListener(new UIGradingSystem());
             bm2.addActionListener(new UIAddSection());
             
-            section.setBounds(85,50,110,20);
+            sectionList.setBounds(85,50,110,20);
             
             f.add(mlb1);
             f.add(bm1);
             f.add(bm2);
 
-            f.add(section);
+            f.add(sectionList);
             f.setLocationRelativeTo(null);
             f.setVisible(true);
             f.setSize(300,200);
+            
             
             gs.addWindowListener(new WindowAdapter() {
             @Override
@@ -130,17 +133,19 @@ public class UserInterface {
                 f.remove(mlb1);
                 f.remove(bm1);
                 f.remove(bm2);
-                f.remove(section);
+                f.remove(sectionList);
 
                 f.removeWindowListener(this);
             }
+            
         });
             
         }
         //Second screen when you click edit section
         public void UIGradingSystem(){
-            
-            JLabel gslb2 = new JLabel("Section : " + sd);
+            selectedSection = (String)sectionList.getSelectedItem();
+            System.out.println("you selected: " + selectedSection);
+            JLabel gslb2 = new JLabel("Section : " + selectedSection);
             gslb1.setBounds(95,30,110,20);
             gslb2.setBounds(105,50,110,20);
             
@@ -158,9 +163,15 @@ public class UserInterface {
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                f.setVisible(true);
-                gs.setVisible(false);
+                f.setVisible(true); 
                 gs.remove(gslb2);
+                gs.remove(gslb1);
+                gs.remove(bgs1);
+                gs.remove(bgs2);
+                gs.remove(bgs3);
+                gs.remove(bgs4);
+                gs.remove(bgs5);
+                gs.dispose();
                 }
             });
             gs.setLocationRelativeTo(null);   
