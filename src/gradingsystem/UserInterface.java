@@ -46,9 +46,6 @@ public class UserInterface {
     
     String section[]={"A01","A02","A03","B01","B02","B03","C01","C02","C03","D01"};        
       
-    
-
-    
     //Add Section Inputs
     //1
     JTextField asec = new JTextField(4);
