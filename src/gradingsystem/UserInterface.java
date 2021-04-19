@@ -22,8 +22,9 @@ public class UserInterface {
     String databaseURL = "jdbc:ucanaccess://src/resources/GradingSystem.accdb";
     Database dbObject = new Database();
     Connection con = null;
-    java.sql.Statement st = null;
+    PreparedStatement st = null;
     
+    // JFrames
     final JFrame gs = new JFrame("Grading System");
     final JFrame as1 = new JFrame("Add Section");
     final JFrame as2 = new JFrame("Add Students");
@@ -72,12 +73,14 @@ public class UserInterface {
     //Add Grade
     JButton submit = new JButton("Submit");
     JTextField textfield1 = new JTextField("enter your input here.");
+    JButton cancel = new JButton("Cancel");
     
     String sd = "A66"; 
     
     JFrame f;
-    
+    // UIMenu, aka the main screen
         public void UIMenu(){
+            
             f = new JFrame("Grading System");
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             f.setLayout(null);
@@ -99,7 +102,7 @@ public class UserInterface {
             f.add(bm2);
 
             f.add(section);
-            
+            f.setLocationRelativeTo(null);
             f.setVisible(true);
             f.setSize(300,200);
             
@@ -116,7 +119,7 @@ public class UserInterface {
         });
             
         }
-        
+        //Second screen when you click edit section
         public void UIGradingSystem(){
             JLabel gslb1 = new JLabel("Grading System");
             JLabel gslb2 = new JLabel("Section : " + sd);
@@ -142,7 +145,7 @@ public class UserInterface {
                 gs.setVisible(false);
                 }
             });
-                
+            gs.setLocationRelativeTo(null);   
             gs.add(gslb1);
             gs.add(gslb2);
             gs.add(bgs1);
@@ -190,16 +193,16 @@ public class UserInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                String tbl = "CREATE TABLE asecasub("
-                    + "StudentID INT NOT NULL,"
-                    + "FullName(45) NOT NULL,"
-                    + "PRIMARY KEY (StudentID))";
+                String tbl = "CREATE TABLE TESTING "
+                    + "(StudentID INT NOT NULL, "
+                    + " FullName VARCHAR(255) NOT NULL, "
+                    + " PRIMARY KEY ( StudentID ))";
                 
             try {
             
                 con = DriverManager.getConnection(databaseURL);
-                st = con.createStatement();
-                st.execute(tbl);
+                st = con.prepareStatement(tbl);
+                st.executeUpdate();
                 System.out.println("Table Created");
                 
             } catch (SQLException t) {
@@ -211,7 +214,7 @@ public class UserInterface {
                 as1.dispose();
             } 
             });
-            
+            as1.setLocationRelativeTo(null);
             as1.add(asec);
             as1.add(asub);
             as1.add(lblas);
@@ -262,7 +265,7 @@ public class UserInterface {
             as2.setLayout(null);
             as2.setVisible(true);
             as2.setSize(300,200);
-            
+            as2.setLocationRelativeTo(null);
             as2.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -293,6 +296,7 @@ public class UserInterface {
             asid.setBounds(95,60,150,20);
             asfn.setBounds(95,90,150,20);
             
+            as3.setLocationRelativeTo(null);
             as3.add(lblid);
             as3.add(lblfn);
             as3.add(asid);
@@ -319,19 +323,18 @@ public class UserInterface {
         }
         
         public void UIAddStudent(){
+            ast.setLocationRelativeTo(null);
             ast.setLayout(null);
             ast.setVisible(true);
             ast.setSize(300,200);
         }
         
         public void UIAddGrade(){
-            ag.setLocationRelativeTo(null);
-            ag.setLayout(null);
-            ag.setVisible(true);
+            
             
             JLabel text1 = new JLabel("Input Component:");
             
-            JButton cancel = new JButton("Cancel");
+            
             
             textfield1.setBounds(150,10,120,20);
             text1.setBounds(20,10,110,20);
@@ -339,13 +342,23 @@ public class UserInterface {
             cancel.setBounds(150,40,80,20);
             
             submit.addActionListener(new Submit());
-            
+            cancel.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                gs.setVisible(true);
+                ag.setVisible(false);
+                }
+            });
+
             ag.setLayout(null);
             ag.setSize(300,120);
             ag.add(text1);
             ag.add(textfield1);
             ag.add(submit);
             ag.add(cancel);
+            ag.setLocationRelativeTo(null);
+            ag.setVisible(true);
             
             ag.addWindowListener(new WindowAdapter() 
             {
@@ -367,10 +380,12 @@ public class UserInterface {
         public void UIEditGradeComponent(){
             egc.setLayout(null);
             egc.setVisible(true);
-            egc.setSize(300,200);
+            egc.setSize(800,720);
+            egc.setLocationRelativeTo(null);
         }
         
         public void UIEditStudentGrade(){
+            esg.setLocationRelativeTo(null);
             esg.setLayout(null);
             esg.setVisible(true);
             esg.setSize(300,200);
@@ -417,12 +432,15 @@ public class UserInterface {
             }
         }
         
+        
+        
         public class UIGradingSystem implements ActionListener {
         @Override
             public void actionPerformed(ActionEvent e) {
                 f.setVisible(false);
                 bm1 = (JButton)e.getSource();
                 UIGradingSystem();
+                ag.setVisible(false);
             }
         }
         
