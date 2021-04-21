@@ -94,7 +94,7 @@ public class UserInterface {
         
     JComboBox sectionList = new JComboBox(section);     
     String selectedSection;  
-      JLabel enterName = new JLabel("Full Name (Temporary)");  
+    JLabel enterName = new JLabel("Full Name (Temporary)");  
 
     
     JFrame f;
@@ -503,8 +503,8 @@ public class UserInterface {
                     con = DriverManager.getConnection(databaseURL);
                     Statement submitST = con.createStatement();
                     System.out.println("Submitted");  
-                    String submitsql = "ALTER TABLE test" 
-                                      +" ADD " + columnName + " integer";
+                    String submitsql = "ALTER TABLE " + selectedSection +
+                                       " ADD " + columnName + " INTEGER";
                     submitST.execute(submitsql);
                     
                 } catch (SQLException E) 
