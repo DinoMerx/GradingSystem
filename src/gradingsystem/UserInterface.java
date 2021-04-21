@@ -83,6 +83,11 @@ public class UserInterface {
     JButton submit = new JButton("Submit");
     JTextField textfield1 = new JTextField("enter your input here.");
     JButton cancel = new JButton("Cancel");
+    //Add Student
+    JTextField enterNameTF = new JTextField(); 
+    JButton ASTSubmit = new JButton("Submit");
+    JButton ASTBack = new JButton("Back");
+    JLabel gslb2 = new JLabel();
     
     //Edit Grade Component
     
@@ -92,7 +97,7 @@ public class UserInterface {
         
     JComboBox sectionList = new JComboBox(section);     
     String selectedSection;  
-        
+      JLabel enterName = new JLabel("Full Name (Temporary)");  
 
     
     JFrame f;
@@ -143,6 +148,7 @@ public class UserInterface {
         }
         //Second screen when you click edit section
         public void UIGradingSystem(){
+            
             selectedSection = (String)sectionList.getSelectedItem();
             System.out.println("you selected: " + selectedSection);
             JLabel gslb2 = new JLabel("Section : " + selectedSection);
@@ -349,7 +355,64 @@ public class UserInterface {
         });
         }
         
-        public void UIAddStudent(){
+        public void UIAddStudent()
+        {
+            
+                    
+            ASTBack.setBounds(150,100,100,30);
+            ASTSubmit.setBounds(25,100,100,30);
+            enterName.setBounds(25,20,200,30);
+            enterNameTF.setBounds(25,60,235,30);
+            
+            ASTSubmit.addActionListener(new AddStudentSubmit() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try
+                    {
+                    String name = enterNameTF.getText();
+                    Connection ASTCon = DriverManager.getConnection(databaseURL);
+                    Statement astST = ASTCon.createStatement();
+                    System.out.println(selectedSection);
+                    String astSQL2 = "INSERT INTO " + selectedSection + " (Full_Name) VALUES (?)";
+                    PreparedStatement astPS = ASTCon.prepareStatement(astSQL2);
+                    astPS.setString(1,name);
+                    astPS.executeUpdate();
+                    
+                        
+                        
+                    // database code here
+                    System.out.println("Submitted");
+                    ast.remove(ASTBack);
+                    ast.remove(ASTSubmit);
+                    ast.remove(enterName);
+                    ast.remove(enterNameTF);
+                    ASTSubmit.removeActionListener(this);
+                    ast.dispose();
+                    }
+                    catch(Exception z)
+                    {
+                        z.printStackTrace();
+                    }
+
+                }
+            });
+            
+            ast.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                ast.remove(enterName);
+                     ast.remove(enterNameTF);
+                     ast.remove(ASTSubmit);
+                     ast.remove(ASTBack);   
+                as3.removeWindowListener(this);
+            }
+        });
+            
+            ast.add(enterName);
+            ast.add(enterNameTF);
+            ast.add(ASTSubmit);
+            ast.add(ASTBack);
+           
             ast.setLocationRelativeTo(null);
             ast.setLayout(null);
             ast.setVisible(true);
@@ -469,15 +532,53 @@ public class UserInterface {
             }
         }
         
-        
+        public class AddStudentSubmit implements ActionListener{
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                ASTSubmit = (JButton)e.getSource();
+                
+                ast.remove(ASTBack);
+                ast.remove(ASTSubmit);
+                ast.remove(enterName);
+                ast.remove(enterNameTF);
+            }
+        }
         
         public class UIGradingSystem implements ActionListener {
         @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) 
+            {
                 f.setVisible(false);
                 bm1 = (JButton)e.getSource();
                 UIGradingSystem();
                 ag.setVisible(false);
+                
+                /*try
+                {
+                    ResultSet rs;
+                  con = DriverManager.getConnection(databaseURL);
+                  Statement submitST = con.createStatement();
+                  rs = submitST.executeQuery("select * from " + selectedSection);
+                  
+                  ResultSetMetaData metaData = rs.getMetaData();
+                  int columnCount = metaData.getColumnCount();
+                  
+                  while(rs.next())
+                  {
+                  for(int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                    Object object = rs.getObject(columnIndex);
+                    System.out.printf("%s, ", object == null ? "NULL" : object.toString());
+                  }
+                    System.out.printf("%n");
+   
+                  }
+                                    
+                } catch (SQLException g)
+                {
+                 g.printStackTrace();
+                }
+                */
             }
         }
         
@@ -518,6 +619,7 @@ public class UserInterface {
         @Override
             public void actionPerformed(ActionEvent e) {
                 bgs1 = (JButton)e.getSource();
+                bgs1.removeActionListener(new UIAddStudent());
                 UIAddStudent();
             }
         }
