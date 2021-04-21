@@ -11,10 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.ResultSet;
 import java.sql.*;
-import java.sql.DatabaseMetaData;
-import java.util.ArrayList;
 /**
  *
  * @author DinoMerx
@@ -64,6 +61,7 @@ public class UserInterface {
     JButton submit = new JButton("Submit");
     JTextField textfield1 = new JTextField("enter your input here.");
     JButton cancel = new JButton("Cancel");
+    
     //Add Student
     JTextField enterNameTF = new JTextField(); 
     JButton ASTSubmit = new JButton("Submit");
@@ -77,11 +75,19 @@ public class UserInterface {
 
     JFrame f;
     // UIMenu, aka the main screen
+    
+    JPanel exit = new JPanel();
+    JPanel minimize = new JPanel();
+    JPanel title = new JPanel();
+    
         public void UIMenu(){
-            
+            title.setBackground(Color.BLUE);
+            title.setBounds(0,0,350,30);
+            exit.setBackground(Color.RED);
+            exit.setBounds(320,0,30,30);
+            minimize.setBackground(Color.ORANGE);
+            minimize.setBounds(290,0,30,30);
             f = new JFrame("Grading System");
-            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            f.setLayout(null);
             
             JLabel mlb1 = new JLabel("Grading System");
             
@@ -91,18 +97,25 @@ public class UserInterface {
             bm2.setBounds(150,80,110,20);
             
             bm1.addActionListener(new UIGradingSystem());
-            bm2.addActionListener(new UIAddSection());
+            //bm2.addActionListener(new UIAddSection());
             
             sectionList.setBounds(85,50,110,20);
             
             f.add(mlb1);
             f.add(bm1);
             f.add(bm2);
-
             f.add(sectionList);
+            
+            f.add(exit);
+            f.add(minimize);
+            f.add(title);
+            
+            f.setUndecorated(false);
+            f.setLayout(null);
             f.setLocationRelativeTo(null);
             f.setVisible(true);
-            f.setSize(300,200);
+            f.setSize(350,350);
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             
             gs.addWindowListener(new WindowAdapter() {
             @Override
@@ -111,7 +124,7 @@ public class UserInterface {
                 f.remove(bm1);
                 f.remove(bm2);
                 f.remove(sectionList);
-
+                
                 f.removeWindowListener(this);
             }
             
@@ -180,7 +193,7 @@ public class UserInterface {
             
         }
         
-        public void UIAddSection(){
+        /*public void UIAddSection(){
             JLabel lblas = new JLabel("Add Section");
             JLabel lblsec = new JLabel("Section:");
             
@@ -250,12 +263,10 @@ public class UserInterface {
         public void actionPerformed(ActionEvent e) {
             sectionList.addItem(asec.getText());
         }
-    }
+    }*/
         
         public void UIAddStudent()
         {
-            
-                    
             ASTBack.setBounds(150,100,100,30);
             ASTSubmit.setBounds(25,100,100,30);
             enterName.setBounds(25,20,200,30);
@@ -317,7 +328,6 @@ public class UserInterface {
         }
         
         public void UIAddGrade(){
-            
             JLabel text1 = new JLabel("Input Component:");
             
             textfield1.setBounds(150,10,120,20);
@@ -362,11 +372,21 @@ public class UserInterface {
         }
         
         public void UIEditGradeComponent(){
+            String[] columnNames = {"StudentID", "LastName", "FirstName", "Middle Name"};
             
+            String[][] data = {
+                {"2019105311", "GARCIA", "DIGGO KID ANDRES", "PALISOC"}
+            };
             
+            JTable egctable = new JTable(data, columnNames);
             
-            egc.add(tableList);
+            JScrollPane egcsp = new JScrollPane(egctable);
+            
+            egcsp.setBounds(150,10,600,500);
             tableList.setBounds(20,10,110,20);
+            
+            egc.add(egcsp);
+            egc.add(tableList);
             
             egc.setLayout(null);
             egc.setVisible(true);
@@ -476,14 +496,14 @@ public class UserInterface {
             }
         }
         
-        public class UIAddSection implements ActionListener {
+        /*public class UIAddSection implements ActionListener {
         @Override
             public void actionPerformed(ActionEvent e) {
                 f.setVisible(false);
                 bm2 = (JButton)e.getSource();
                 UIAddSection();
             }
-        }
+        }*/
         
         public class UIAddStudent implements ActionListener {
         @Override
