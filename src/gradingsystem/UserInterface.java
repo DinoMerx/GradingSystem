@@ -5,8 +5,8 @@
  */
 package gradingsystem;
 import java.awt.*;
-import javax.swing.*;
 import java.awt.event.*;
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -81,6 +81,8 @@ public class UserInterface {
     JPanel minimize = new JPanel();
     JPanel title = new JPanel();
     
+    private Point currentLocation;
+    
         public void UIMenu(){
             title.setBackground(Color.BLUE);
             title.setBounds(0,0,350,30);
@@ -88,32 +90,70 @@ public class UserInterface {
             exit.setBounds(320,0,30,30);
             minimize.setBackground(Color.ORANGE);
             minimize.setBounds(290,0,30,30);
+            
+            exit.addMouseListener(new MouseAdapter(){
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    System.exit(0);
+                }
+            });
+            
+            minimize.addMouseListener(new MouseAdapter(){
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    f.setState(Frame.ICONIFIED);
+                }
+            });
+            
+            title.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                currentLocation = e.getPoint();
+            }
+             });
+            
+            title.addMouseMotionListener(new MouseAdapter() {
+                public void mouseDragged(MouseEvent e) {
+                    Point currentScreenLocation = e.getLocationOnScreen();
+                    f.setLocation(currentScreenLocation.x - currentLocation.x, currentScreenLocation.y - currentLocation.y);
+                }
+            });
+            
+            JPanel pbm1 = new JPanel();
+            pbm1.setBackground(Color.WHITE);
+            pbm1.setBounds(20,100,150,150);
+            pbm1.setLayout(null);
+            
+            JPanel pbm2 = new JPanel();
+            pbm2.setBackground(Color.WHITE);
+            pbm2.setBounds(180,100,150,150);
+            pbm2.setLayout(null);
+            
             f = new JFrame("Grading System");
+            JLabel mlbl = new JLabel("Grading System");
             
-            JLabel mlb1 = new JLabel("Grading System");
+            mlbl.setBounds(95,30,110,20);
             
-            mlb1.setBounds(95,30,110,20);
-            
-            bm1.setBounds(20,80,110,20);
-            bm2.setBounds(150,80,110,20);
+            bm1.setBounds(20,100,110,20);
+            bm2.setBounds(20,100,110,20);
             
             bm1.addActionListener(new UIGradingSystem());
             bm2.addActionListener(new UIAddSection());
-                   
-                    
             
             sectionList.setBounds(85,50,110,20);
             
-            f.add(mlb1);
-            f.add(bm1);
-            f.add(bm2);
+            pbm1.add(bm1);
+            pbm2.add(bm2);
+            
+            f.add(mlbl);
             f.add(sectionList);
             
+            f.add(pbm1);
+            f.add(pbm2);
             f.add(exit);
             f.add(minimize);
             f.add(title);
             
-            f.setUndecorated(false);
+            f.setUndecorated(true);
             f.setLayout(null);
             f.setLocationRelativeTo(null);
             f.setVisible(true);
@@ -123,7 +163,7 @@ public class UserInterface {
             gs.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                f.remove(mlb1);
+                f.remove(mlbl);
                 f.remove(bm1);
                 f.remove(bm2);
                 f.remove(sectionList);
@@ -280,6 +320,8 @@ public class UserInterface {
             }
         });
         }
+
+    
         
         public class section implements ActionListener {
         public void actionPerformed(ActionEvent e) {
