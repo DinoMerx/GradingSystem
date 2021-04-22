@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.*;
+import javax.sql.*;
 /**
  *
  * @author DinoMerx
@@ -43,7 +44,7 @@ public class UserInterface {
     JComboBox sectionList = new JComboBox();
     
     //Add Section Inputs
-    JTextField asec = new JTextField(4);
+    JTextField asec = new JTextField("enter input");
     
     JButton bas1 = new JButton("Next");
     JButton bas2 = new JButton("Cancel");
@@ -97,7 +98,9 @@ public class UserInterface {
             bm2.setBounds(150,80,110,20);
             
             bm1.addActionListener(new UIGradingSystem());
-            //bm2.addActionListener(new UIAddSection());
+            bm2.addActionListener(new UIAddSection());
+                   
+                    
             
             sectionList.setBounds(85,50,110,20);
             
@@ -193,7 +196,7 @@ public class UserInterface {
             
         }
         
-        /*public void UIAddSection(){
+        public void UIAddSection(){
             JLabel lblas = new JLabel("Add Section");
             JLabel lblsec = new JLabel("Section:");
             
@@ -211,13 +214,32 @@ public class UserInterface {
                 public void actionPerformed(ActionEvent e)
                 {
                 bas1.removeActionListener(this);
-                asec.removeActionListener(this);
+                
+                try
+                {
+                    Connection ASTCon = DriverManager.getConnection(databaseURL);
+                    Statement astST = ASTCon.createStatement();
+                    String asSQL = "CREATE TABLE PLACEHOLDER " +
+                                   "(id INTEGER not NULL, "
+                                 + "PRIMARY KEY ( id ))";
+                   String asSQL2 ="ALTER TABLE PLACEHOLDER" +
+                                   " RENAME TO " + asec.getText();
+                   astST.execute(asSQL);
+                   astST.execute(asSQL2);
+                   
+                }
+                catch(Exception p)
+                {
+                    p.printStackTrace();
+                }
+                
                 
                 f.setVisible(true); 
                 as1.remove(lblas);
                 as1.remove(lblsec);
                 as1.remove(bas2);
-                as1.remove(asec);
+                
+                //.removeActionListener(this);
                 as1.dispose();
                 }
             });
@@ -263,7 +285,7 @@ public class UserInterface {
         public void actionPerformed(ActionEvent e) {
             sectionList.addItem(asec.getText());
         }
-    }*/
+    }
         
         public void UIAddStudent()
         {
@@ -281,13 +303,12 @@ public class UserInterface {
                     Connection ASTCon = DriverManager.getConnection(databaseURL);
                     Statement astST = ASTCon.createStatement();
                     System.out.println(selectedSection);
+                    //String astSQL2 = "ALTER TABLE A01"
+                            //+ " RENAME TO " + name; 
                     String astSQL2 = "INSERT INTO " + selectedSection + " (Full_Name) VALUES (?)";
                     PreparedStatement astPS = ASTCon.prepareStatement(astSQL2);
-                    astPS.setString(1,name);
-                    astPS.executeUpdate();
-                    
-                        
-                        
+                   astPS.setString(1,name);
+                         
                     // database code here
                     System.out.println("Submitted");
                     ast.remove(ASTBack);
@@ -342,6 +363,11 @@ public class UserInterface {
                 {
                 gs.setVisible(true);
                 ag.setVisible(false);
+                ag.remove(textfield1);
+                ag.remove(submit);
+                ag.remove(cancel);
+                ag.remove(text1);
+                cancel.removeActionListener(this);
                 }
             });
 
@@ -496,14 +522,14 @@ public class UserInterface {
             }
         }
         
-        /*public class UIAddSection implements ActionListener {
+        public class UIAddSection implements ActionListener {
         @Override
             public void actionPerformed(ActionEvent e) {
                 f.setVisible(false);
                 bm2 = (JButton)e.getSource();
                 UIAddSection();
             }
-        }*/
+        }
         
         public class UIAddStudent implements ActionListener {
         @Override
