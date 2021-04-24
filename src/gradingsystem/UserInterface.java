@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.*;
 import javax.sql.*;
+import javax.swing.border.*;
 /**
  *
  * @author DinoMerx
@@ -84,12 +85,66 @@ public class UserInterface {
     private Point currentLocation;
     
         public void UIMenu(){
-            title.setBackground(Color.BLUE);
+            f = new JFrame("Grading System");
+            
+            title.setBackground(Color.RED);
             title.setBounds(0,0,350,30);
+            JLabel tb = new JLabel("GRADING SYSTEM");
+            tb.setBounds(20,20,110,20);
+            title.add(tb);
+            
             exit.setBackground(Color.RED);
             exit.setBounds(320,0,30,30);
-            minimize.setBackground(Color.ORANGE);
+            JLabel x = new JLabel("X");
+            x.setBounds(20,20,110,20);
+            exit.add(x);
+            
+            minimize.setBackground(Color.RED);
             minimize.setBounds(290,0,30,30);
+            JLabel m = new JLabel("−");
+            m.setBounds(20,20,110,20);
+            minimize.add(m);
+            
+            JPanel pbm1 = new RoundedPanel(30, Color.WHITE);
+            pbm1.setBounds(20,100,150,150);
+            pbm1.setLayout(null);
+            bm1.setBounds(20,100,110,20);
+            bm1.addActionListener(new UIGradingSystem());
+            JLabel bm1lbl = new JLabel("<html><div style='text-align: center;'>This is where you Edit and View Section</div><html>");
+            bm1lbl.setBounds(20,20,110,50);
+            pbm1.add(bm1);
+            pbm1.add(bm1lbl);
+            
+            JPanel pbm2 = new RoundedPanel(30, Color.WHITE);
+            pbm2.setBounds(180,100,150,150);
+            pbm2.setLayout(null);
+            bm2.setBounds(20,100,110,20);
+            bm2.addActionListener(new UIAddSection());
+            JLabel bm2lbl = new JLabel("<html><div style='text-align: center;'>This is where you Add Section</div><html>");
+            bm2lbl.setBounds(20,20,110,50);
+            pbm2.add(bm2lbl);
+            pbm2.add(bm2);
+            
+            JLabel mlbl = new JLabel("Grading System");
+            
+            mlbl.setBounds(120,40,110,20);
+            sectionList.setBounds(110,60,110,20);
+            
+            f.add(mlbl);
+            f.add(sectionList);
+            
+            f.add(pbm1);
+            f.add(pbm2);
+            f.add(exit);
+            f.add(minimize);
+            f.add(title);
+            
+            f.setUndecorated(true);
+            f.setLayout(null);
+            f.setLocationRelativeTo(null);
+            f.setVisible(true);
+            f.setSize(350,350);
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             
             exit.addMouseListener(new MouseAdapter(){
                 @Override
@@ -118,48 +173,6 @@ public class UserInterface {
                 }
             });
             
-            JPanel pbm1 = new JPanel();
-            pbm1.setBackground(Color.WHITE);
-            pbm1.setBounds(20,100,150,150);
-            pbm1.setLayout(null);
-            
-            JPanel pbm2 = new JPanel();
-            pbm2.setBackground(Color.WHITE);
-            pbm2.setBounds(180,100,150,150);
-            pbm2.setLayout(null);
-            
-            f = new JFrame("Grading System");
-            JLabel mlbl = new JLabel("Grading System");
-            
-            mlbl.setBounds(95,30,110,20);
-            
-            bm1.setBounds(20,100,110,20);
-            bm2.setBounds(20,100,110,20);
-            
-            bm1.addActionListener(new UIGradingSystem());
-            bm2.addActionListener(new UIAddSection());
-            
-            sectionList.setBounds(85,50,110,20);
-            
-            pbm1.add(bm1);
-            pbm2.add(bm2);
-            
-            f.add(mlbl);
-            f.add(sectionList);
-            
-            f.add(pbm1);
-            f.add(pbm2);
-            f.add(exit);
-            f.add(minimize);
-            f.add(title);
-            
-            f.setUndecorated(true);
-            f.setLayout(null);
-            f.setLocationRelativeTo(null);
-            f.setVisible(true);
-            f.setSize(350,350);
-            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            
             gs.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -172,9 +185,8 @@ public class UserInterface {
             }
             
         });
-            
         }
-        //Second screen when you click edit section
+        
         public void UIGradingSystem(){
             selectedSection = (String)sectionList.getSelectedItem();
             System.out.println("you selected: " + selectedSection);
@@ -607,3 +619,51 @@ public class UserInterface {
             }
         }
 }
+
+        class RoundedPanel extends JPanel
+        {
+        private Color backgroundColor;
+        private int cornerRadius = 15;
+
+        public RoundedPanel(LayoutManager layout, int radius) {
+            super(layout);
+            cornerRadius = radius;
+        }
+
+        public RoundedPanel(LayoutManager layout, int radius, Color bgColor) {
+            super(layout);
+            cornerRadius = radius;
+            backgroundColor = bgColor;
+        }
+
+        public RoundedPanel(int radius) {
+            super();
+            cornerRadius = radius;
+        }
+
+        public RoundedPanel(int radius, Color bgColor) {
+            super();
+            cornerRadius = radius;
+            backgroundColor = bgColor;
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Dimension arcs = new Dimension(cornerRadius, cornerRadius);
+            int width = getWidth();
+            int height = getHeight();
+            Graphics2D graphics = (Graphics2D) g;
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            //Draws the rounded panel with borders.
+            if (backgroundColor != null) {
+                graphics.setColor(backgroundColor);
+            } else {
+                graphics.setColor(getBackground());
+            }
+            graphics.fillRoundRect(0, 0, width-1, height-1, arcs.width, arcs.height); //paint background
+            graphics.setColor(getForeground());
+            graphics.drawRoundRect(0, 0, width-1, height-1, arcs.width, arcs.height); //paint border
+            }
+        }
