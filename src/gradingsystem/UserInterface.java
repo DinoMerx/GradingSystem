@@ -83,7 +83,10 @@ public class UserInterface {
     
     //Edit Student Grade
     JButton addSubj = new JButton("Add Subject");
+    JButton assSubj = new JButton("Assign Subject");
     JTextField SubjTF = new JTextField("enter your input here");
+    JComboBox subjectList = new JComboBox();
+    
     
     private Point currentLocation;
         
@@ -507,13 +510,16 @@ public class UserInterface {
         public void UIEditStudentGrade(){
             
             addSubj.setBounds(15,60,110,20);
+            assSubj.setBounds(15,90,110,20);
             SubjTF.setBounds(130,60,130,20);
-            
+            subjectList.setBounds(160,90,110,20);
             
             esg.add(addSubj);
             esg.add(SubjTF);
+            esg.add(assSubj);
+            esg.add(subjectList);
             
-            addSubj.addActionListener(new ActionListener()
+            assSubj.addActionListener(new ActionListener()
             {
                 public void actionPerformed(ActionEvent e)
                 {
@@ -528,11 +534,7 @@ public class UserInterface {
                 esgST.execute(esgSQL);
                 
                 
-                // Move this to add subject
-                String esgSQL2 = "ALTER TABLE SectionList"
-                        + " ADD " + SubjTF.getText() + " varchar(255)";
-                
-                esgST.execute(esgSQL2);
+               
                 
                 String esgSQL2a = "UPDATE SectionList SET " + SubjTF.getText()
                         + " = ? WHERE SECTION = ?";
@@ -551,6 +553,29 @@ public class UserInterface {
                 }
                 
                 }
+                
+            });
+            
+            addSubj.addActionListener(new ActionListener()
+            {
+             public void actionPerformed(ActionEvent e)
+                {
+                    try
+                    {
+                       Connection assST = DriverManager.getConnection(databaseURL);
+                       Statement esgST = assST.createStatement(); 
+                                // Move this to add subject
+                       String esgSQL2 = "ALTER TABLE SectionList"
+                               + " ADD " + SubjTF.getText() + " varchar(255)";
+                       subjectList.addItem(SubjTF.getText());
+                
+                       esgST.execute(esgSQL2);
+                    }
+                    catch(Exception pe)
+                    {
+                        pe.printStackTrace();
+                    }
+                }   
             });
             
             esg.setLocationRelativeTo(null);
