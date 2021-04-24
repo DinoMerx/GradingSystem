@@ -81,9 +81,17 @@ public class UserInterface {
     JPanel exit = new JPanel();
     JPanel minimize = new JPanel();
     JPanel title = new JPanel();
+    //H
+
+    //Edit Student Grade
+    JButton addSubj = new JButton("Add Subject");
+    JButton assSubj = new JButton("Assign Subject");
+    JTextField SubjTF = new JTextField("enter your input here");
+    JComboBox subjectList = new JComboBox();
     
+
     private Point currentLocation;
-    
+        
         public void UIMenu(){
             f = new JFrame("Grading System");
             
@@ -173,18 +181,24 @@ public class UserInterface {
                 }
             });
             
-            gs.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                f.remove(mlbl);
-                f.remove(bm1);
-                f.remove(bm2);
-                f.remove(sectionList);
+            try
+            {
+                PreparedStatement uiST;
+                String uiSQL = " SELECT SECTION FROM SectionList ";
+                con = DriverManager.getConnection(databaseURL); 
+                uiST = con.prepareStatement(uiSQL);
+                ResultSet uiRS = uiST.executeQuery();
+                while(uiRS.next())
+                {
+                  sectionList.addItem(uiRS.getString("SECTION"));
+                }
                 
-                f.removeWindowListener(this);
+                
             }
-            
-        });
+            catch(SQLException PE)
+            {
+                PE.printStackTrace();
+            }
         }
         
         public void UIGradingSystem(){
@@ -272,15 +286,21 @@ public class UserInterface {
                     Connection ASTCon = DriverManager.getConnection(databaseURL);
                     Statement astST = ASTCon.createStatement();
                     String asSQL = "CREATE TABLE PLACEHOLDER " +
-                                   "(id INTEGER not NULL, "
-                                 + "PRIMARY KEY ( id ))";
-                   String asSQL2 ="ALTER TABLE PLACEHOLDER" +
+                                   "(id AUTOINCREMENT PRIMARY KEY, FULL_NAME varchar(255), "
+                                 + ")";
+                    String asSQL2 ="ALTER TABLE PLACEHOLDER" +
                                    " RENAME TO " + asec.getText();
+                    String asSQL3 = " INSERT INTO SectionList(SECTION) VALUES(?)";
+                    PreparedStatement astST2 = ASTCon.prepareStatement(asSQL3);
+                    
+                   
                    astST.execute(asSQL);
                    astST.execute(asSQL2);
+                   astST2.setString(1,asec.getText());
+                   astST2.executeUpdate();
                    
                 }
-                catch(Exception p)
+                catch(SQLException p)
                 {
                     p.printStackTrace();
                 }
@@ -329,6 +349,7 @@ public class UserInterface {
                 as1.remove(bas2);
                 as1.remove(asec);
                 as1.removeWindowListener(this);
+                
             }
         });
         }
@@ -359,10 +380,10 @@ public class UserInterface {
                     System.out.println(selectedSection);
                     //String astSQL2 = "ALTER TABLE A01"
                             //+ " RENAME TO " + name; 
-                    String astSQL2 = "INSERT INTO " + selectedSection + " (Full_Name) VALUES (?)";
+                    String astSQL2 = "INSERT INTO " + selectedSection + " (FULL_NAME) VALUES (?)";
                     PreparedStatement astPS = ASTCon.prepareStatement(astSQL2);
-                   astPS.setString(1,name);
-                         
+                    astPS.setString(1,name);
+                    astPS.executeUpdate();     
                     // database code here
                     System.out.println("Submitted");
                     ast.remove(ASTBack);
@@ -379,6 +400,18 @@ public class UserInterface {
 
                 }
             });
+            ASTBack.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    ast.remove(enterName);
+                    ast.remove(enterNameTF);
+                    ast.remove(ASTSubmit);
+                    ast.remove(ASTBack);   
+                    ast.setVisible(false);
+                    ASTSubmit.removeActionListener(this);
+                }
+            });
             
             ast.addWindowListener(new WindowAdapter() {
             @Override
@@ -387,7 +420,7 @@ public class UserInterface {
                      ast.remove(enterNameTF);
                      ast.remove(ASTSubmit);
                      ast.remove(ASTBack);   
-                as3.removeWindowListener(this);
+                ast.removeWindowListener(this);
             }
         });
             
@@ -475,6 +508,76 @@ public class UserInterface {
         }
         
         public void UIEditStudentGrade(){
+            
+            addSubj.setBounds(15,60,110,20);
+            assSubj.setBounds(15,90,110,20);
+            SubjTF.setBounds(130,60,130,20);
+            subjectList.setBounds(160,90,110,20);
+            
+            esg.add(addSubj);
+            esg.add(SubjTF);
+            esg.add(assSubj);
+            esg.add(subjectList);
+            
+            assSubj.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                try
+                {
+                Connection esgCon = DriverManager.getConnection(databaseURL);
+                
+                Statement esgST = esgCon.createStatement();
+                
+                String esgSQL = "CREATE TABLE PLACEHOLDER2"
+                        + "(id AUTOINCREMENT PRIMARY KEY)";
+                esgST.execute(esgSQL);
+                
+                
+               
+                
+                String esgSQL2a = "UPDATE SectionList SET " + SubjTF.getText()
+                        + " = ? WHERE SECTION = ?";
+                
+                PreparedStatement esgPS = con.prepareStatement(esgSQL2a);
+                esgPS.setObject(1, selectedSection + SubjTF.getText());
+                esgPS.setString(2, selectedSection);
+                esgPS.executeUpdate();
+                String esgSQL3 = "ALTER TABLE PLACEHOLDER2"
+                        + " RENAME TO " + selectedSection + SubjTF.getText();
+                esgST.execute(esgSQL3);
+                }
+                catch(SQLException EZ)
+                {
+                    EZ.printStackTrace();
+                }
+                
+                }
+                
+            });
+            
+            addSubj.addActionListener(new ActionListener()
+            {
+             public void actionPerformed(ActionEvent e)
+                {
+                    try
+                    {
+                       Connection assST = DriverManager.getConnection(databaseURL);
+                       Statement esgST = assST.createStatement(); 
+                                // Move this to add subject
+                       String esgSQL2 = "ALTER TABLE SectionList"
+                               + " ADD " + SubjTF.getText() + " varchar(255)";
+                       subjectList.addItem(SubjTF.getText());
+                
+                       esgST.execute(esgSQL2);
+                    }
+                    catch(Exception pe)
+                    {
+                        pe.printStackTrace();
+                    }
+                }   
+            });
+            
             esg.setLocationRelativeTo(null);
             esg.setLayout(null);
             esg.setVisible(true);
