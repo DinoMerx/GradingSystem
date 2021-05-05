@@ -35,13 +35,13 @@ public class UserInterface {
     final JFrame ag = new JFrame("Add Grade");
     final JFrame egc = new JFrame("Edit Grade Component");
     final JFrame esg = new JFrame("Edit Student Grade");
-    
-    
+    final JFrame f = new JFrame("Grading System");
+    final JFrame EW = new JFrame("Error: Section Already Exists!");
     
     //Menu Inputs
     JButton bm1 = new JButton("Edit Section");
     JButton bm2 = new JButton("Add Section");
-        
+    JLabel mlbl = new JLabel("Grading System");   
     JComboBox sectionList = new JComboBox();
     
     //Add Section Inputs
@@ -75,7 +75,8 @@ public class UserInterface {
     String selectedSection;  
     JLabel enterName = new JLabel("Full Name (Temporary)");  
 
-    JFrame f;
+    
+    
     // UIMenu, aka the main screen
     
     JPanel exit = new JPanel();
@@ -93,7 +94,7 @@ public class UserInterface {
     private Point currentLocation;
         
         public void UIMenu(){
-            f = new JFrame("Grading System");
+            
             
             title.setBackground(Color.RED);
             title.setBounds(0,0,350,30);
@@ -128,12 +129,13 @@ public class UserInterface {
             pbm2.setLayout(null);
             bm2.setBounds(20,100,110,20);
             bm2.addActionListener(new UIAddSection());
+                    
             JLabel bm2lbl = new JLabel("<html><div style='text-align: center;'>This is where you Add Section</div><html>");
             bm2lbl.setBounds(20,20,110,50);
             pbm2.add(bm2lbl);
             pbm2.add(bm2);
             
-            JLabel mlbl = new JLabel("Grading System");
+            
             
             mlbl.setBounds(120,40,110,20);
             sectionList.setBounds(110,60,110,20);
@@ -192,7 +194,7 @@ public class UserInterface {
                 {
                   sectionList.addItem(uiRS.getString("SECTION"));
                 }
-                
+                uiRS.close();
                 
             }
             catch(SQLException PE)
@@ -218,7 +220,7 @@ public class UserInterface {
             bgs2.addActionListener(new UIAddGrade());
             bgs3.addActionListener(new UIEditGradeComponent());
             bgs4.addActionListener(new UIEditStudentGrade());
-            bgs5.addActionListener(new ActionListener()
+            bgs5.addActionListener(new ActionListener() //bgs5 cancel
             {
                 public void actionPerformed(ActionEvent e)
                 {
@@ -274,58 +276,136 @@ public class UserInterface {
             bas1.setBounds(50,120,80,20);
             bas2.setBounds(150,120,80,20);
             
-            bas1.addActionListener(new section());
+            
             bas1.addActionListener(new ActionListener()
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                bas1.removeActionListener(this);
                 
-                try
+                try // TODO: If section name exists, do nothing. Else, execute asSQL,2,3
+                {  
+                int tester = 0;
+                DatabaseMetaData dbm = con.getMetaData();
+                boolean exists = con.getMetaData().getTables(null, null, asec.getText(), null).next();
+                
+                if(exists)
                 {
+                  JOptionPane.showMessageDialog(null, "Section already Exists!");
+                    //Statement stmt = con.createStatement();
+                    System.out.println("Section already exists!"); 
+                }   
+                    
+                    
+                    
+                    /*System.out.println("Initial Tester Value: " + tester);
+                    String currentTable = tables.getString(3);
+                    String currentSection = asec.getText();
+                    System.out.println("CurrentTable: " + currentTable);
+                    System.out.println("CurrentSection: " + currentSection);
+                    if(currentSection.equals(currentTable));
+                    {
+                    tester = 1;
+                    }*/
+                    //DEBUGGER V
+                    //System.out.println("THIS IS CURRENT DATA: " + asec.getText());
+                    //System.out.println("THIS IS TABLE DATA: " + tables.getString(3));
+                    //System.out.println("TESTER VALUE = " + tester);
+                    
+                
+                
+                /*if (tester == 1)
+                {
+                    
+                    //String sqlDELTABLE = "DROP TABLE PLACEHOLDER";
+                    //stmt.executeUpdate(sqlDELTABLE);
+                }*/
+                else
+                {
+                    System.out.println("Creating section...");
                     Connection ASTCon = DriverManager.getConnection(databaseURL);
                     Statement astST = ASTCon.createStatement();
-                    String asSQL = "CREATE TABLE PLACEHOLDER " +
+                    
+                ResultSet data = dbm.getTables(null, null, "%", null);
+                while(data.next())
+                {
+                if(data.getString(3).equals("GENERICINSERT_PLACEHOLDER"))
+                {
+                    String sqlDELETE = "DROP GENERICINSERT_PLACEHOLDER";
+                    Statement stDEL = con.createStatement();
+                    stDEL.execute(sqlDELETE);
+                    stDEL.close();
+                }
+                }
+                     
+                    String asSQL = "CREATE TABLE PLACEHOLDER "  +
                                    "(id AUTOINCREMENT PRIMARY KEY, FULL_NAME varchar(255), "
                                  + ")";
                     String asSQL2 ="ALTER TABLE PLACEHOLDER" +
                                    " RENAME TO " + asec.getText();
                     String asSQL3 = " INSERT INTO SectionList(SECTION) VALUES(?)";
                     PreparedStatement astST2 = ASTCon.prepareStatement(asSQL3);
-                    
+                    sectionList.addItem(asec.getText());
                    
                    astST.execute(asSQL);
                    astST.execute(asSQL2);
                    astST2.setString(1,asec.getText());
                    astST2.executeUpdate();
+                   bas1.removeActionListener(this);
+                   astST.close();
+                   astST2.close();
+                   ASTCon.close(); 
+                f.setVisible(true); 
+                SwingUtilities.updateComponentTreeUI(f);
+                   f.invalidate();
+                   f.validate();
+                   f.repaint();
+                SwingUtilities.updateComponentTreeUI(as1);
+                   as1.invalidate();
+                   as1.validate();
+                   as1.repaint();   
+
+                   
+                as1.remove(lblas);
+                as1.remove(lblsec);
+                as1.remove(bas2); //test1
+                as1.dispose();
+                bas1.removeActionListener(this);
+                
+                f.dispose();
+                UserInterface UIObject = new UserInterface();
+                UIObject.UIMenu();
+                
+                }
                    
                 }
                 catch(SQLException p)
                 {
                     p.printStackTrace();
                 }
+               
                 
                 
-                f.setVisible(true); 
-                as1.remove(lblas);
-                as1.remove(lblsec);
-                as1.remove(bas2);
                 
-                //.removeActionListener(this);
-                as1.dispose();
+                
+                
                 }
             });
-            bas2.addActionListener(new ActionListener()
+            
+            bas2.addActionListener(new ActionListener() //button Back in adoasjdiowadhjfioweqjfrio
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                f.setVisible(true); 
+
+                as1.dispatchEvent(new WindowEvent(as1, WindowEvent.WINDOW_CLOSING));    
                 as1.remove(lblas);
                 as1.remove(lblsec);
                 as1.remove(bas1);
                 as1.remove(bas2);
                 as1.remove(asec);
-                as1.dispose();
+                as1.setVisible(false);
+                f.dispose();
+                f.setVisible(true); 
+                bas2.removeActionListener(this);
                 }
             });
             
@@ -341,16 +421,23 @@ public class UserInterface {
             as1.setSize(300,200);
             
             as1.addWindowListener(new WindowAdapter() {
+                
             @Override
             public void windowClosing(WindowEvent e) {
+                
                 as1.remove(lblas);
                 as1.remove(lblsec);
                 as1.remove(bas1);
                 as1.remove(bas2);
                 as1.remove(asec);
                 as1.removeWindowListener(this);
-                
-            }
+                f.setVisible(true);
+                as1.dispatchEvent(new WindowEvent(as1, WindowEvent.WINDOW_CLOSING));
+                for( ActionListener al : bas2.getActionListeners() ) {
+                bas2.removeActionListener( al );
+                }
+}
+            
         });
         }
 
@@ -383,7 +470,8 @@ public class UserInterface {
                     String astSQL2 = "INSERT INTO " + selectedSection + " (FULL_NAME) VALUES (?)";
                     PreparedStatement astPS = ASTCon.prepareStatement(astSQL2);
                     astPS.setString(1,name);
-                    astPS.executeUpdate();     
+                    astPS.executeUpdate();   
+                    astPS.close();
                     // database code here
                     System.out.println("Submitted");
                     ast.remove(ASTBack);
@@ -454,6 +542,7 @@ public class UserInterface {
                 ag.remove(submit);
                 ag.remove(cancel);
                 ag.remove(text1);
+                f.setVisible(true);
                 cancel.removeActionListener(this);
                 }
             });
@@ -551,7 +640,7 @@ public class UserInterface {
                 {
                     EZ.printStackTrace();
                 }
-                
+                assSubj.removeActionListener(this);
                 }
                 
             });
@@ -575,6 +664,7 @@ public class UserInterface {
                     {
                         pe.printStackTrace();
                     }
+                    addSubj.removeActionListener(this);
                 }   
             });
             
@@ -606,6 +696,7 @@ public class UserInterface {
                     String submitsql = "ALTER TABLE " + selectedSection +
                                        " ADD " + columnName + " INTEGER";
                     submitST.execute(submitsql);
+                    submitST.close();
                     
                 } catch (SQLException E) 
                 {
