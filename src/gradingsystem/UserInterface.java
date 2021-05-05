@@ -26,6 +26,44 @@ public class UserInterface {
     PreparedStatement st = null;
     String driverName = "com.mysql.jdbc.Driver";
     
+    //Percent
+    String PerformanceTask;
+    String WrittenWork;
+    String Test;
+    //calculation
+    /*
+    PERFORMANCETASKTOTAL
+    SQL = "Select PerformanceTask from SECTIONSUBJECT"
+     ResultSet rs; 
+     String querySQL =  "select PerformanceTask from Percentage";
+     Statement qSTMT = con.createStatement();
+     rs = qSTMT.executeQuery(querySQL);
+     
+     while(rs.next())
+    {
+    PTInteger = rs.getString("PerformanceTask")
+    PTInteger = Integer.parseInt(PTInteger);
+    PerformanceTaskTotal = PerformanceTaskTotal + PTInteger; 
+    }
+    */
+    //CODE TO GET THAT THURDY
+    /*DatabaseMetaData dbm2 = con.getMetaData();
+                ResultSet rs; 
+                String querySQL =  "select PerformanceTask from Percentage";
+                Statement qSTMT = con.createStatement();
+                rs = qSTMT.executeQuery(querySQL);
+                
+                if(rs.next())
+                {
+                    PerformanceTask = rs.getString("PerformanceTask");
+                    WrittenWork = rs.getString("Written Work(Q/SW)");
+                    Test = rs.getString("Test");
+                    
+                    PerformanceTask = Float.parseFloat(PerformanceTask);
+                    WrittenWork= Float.parseFloat(WrittenWork);
+                    Test=Float.parseFloat(Test);
+                }*/
+    
     // JFrames
     final JFrame gs = new JFrame("Grading System");
     final JFrame as1 = new JFrame("Add Section");
@@ -363,17 +401,17 @@ public class UserInterface {
                    as1.invalidate();
                    as1.validate();
                    as1.repaint();   
-
-                   
+                
+                
+                
+                
                 as1.remove(lblas);
                 as1.remove(lblsec);
                 as1.remove(bas2); //test1
                 as1.dispose();
                 bas1.removeActionListener(this);
                 
-                f.dispose();
-                UserInterface UIObject = new UserInterface();
-                UIObject.UIMenu();
+                f.setVisible(true);
                 
                 }
                    
