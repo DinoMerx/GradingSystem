@@ -81,6 +81,7 @@ public class UserInterface {
     final JFrame ast = new JFrame("Add Student");
     final JFrame ag = new JFrame("Add Grade");
     final JFrame egc = new JFrame("Edit Grade Component");
+    final JFrame ep = new JFrame("Edit Percentage");
     final JFrame esg = new JFrame("Edit Student Grade");
     final JFrame f = new JFrame("Grading System");
     final JFrame EW = new JFrame("Error: Section Already Exists!");
@@ -184,8 +185,7 @@ public class UserInterface {
             pbm2.add(bm2lbl);
             pbm2.add(bm2);
             
-            bm2.removeActionListener(actionListener);
-            bm2.addActionListener(actionListener);
+            bm2.addActionListener(new UIAddSection());
             
             mlbl.setBounds(120,40,110,20);
             sectionList.setBounds(110,60,110,20);
@@ -268,7 +268,21 @@ public class UserInterface {
             
             bgs1.addActionListener(new UIAddStudent());
             bgs2.addActionListener(new UIAddGrade());
-            bgs3.addActionListener(new UIEditGradeComponent());
+            bgs3.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    UIEditGradeComponent();
+                    bgs3.removeActionListener(this);
+                    gs.remove(gslb2);
+                    gs.remove(gslb1);
+                    gs.remove(bgs1);
+                    gs.remove(bgs2);
+                    gs.remove(bgs3);
+                    gs.remove(bgs4);
+                    gs.remove(bgs5);
+                }
+            });
             bgs4.addActionListener(new UIEditStudentGrade());
             bgs5.addActionListener(new ActionListener() //bgs5 cancel
             {
@@ -389,18 +403,43 @@ public class UserInterface {
                 }
                      
                     String asSQL = "CREATE TABLE PLACEHOLDER "  +
-                                   "(id AUTOINCREMENT PRIMARY KEY, FULL_NAME varchar(255), "
+                                   "(id AUTOINCREMENT PRIMARY KEY, FULL_NAME varchar(255), PERFORMANCE_TASK float, WRITTEN_WORK float, LONG_TEST float "
                                  + ")";
                     String asSQL2 ="ALTER TABLE PLACEHOLDER" +
                                    " RENAME TO " + asec.getText();
                     String asSQL3 = " INSERT INTO SectionList(SECTION) VALUES(?)";
+                    String asSQL4 = "CREATE TABLE " + asec.getText()+"GRADES "
+                            + "(ID int, PERFORMANCE_TASK float, WRITTEN_WORK float, LONG_TEST float, PRIMARY KEY(ID))";
+                    
+                    PreparedStatement asSQL4STMT = con.prepareStatement(asSQL4);
+                    asSQL4STMT.execute();
+                    String asSQL5;
+                    for (int counter = 1; counter <= 10; counter++)
+                    {
+                        asSQL5= "INSERT INTO " + asec.getText()+ "GRADES(ID) VALUES("+counter+")";
+                        PreparedStatement asSQL5STMT = con.prepareStatement(asSQL5);
+                        asSQL5STMT.executeUpdate();
+                    }
+   
+                    
+
+                    
+                    
                     PreparedStatement astST2 = ASTCon.prepareStatement(asSQL3);
+                    
+                    
+                    
                     sectionList.addItem(asec.getText());
+                   
+                    
                    
                    astST.execute(asSQL);
                    astST.execute(asSQL2);
                    astST2.setString(1,asec.getText());
                    astST2.executeUpdate();
+                   
+                   
+                   
                    bas1.removeActionListener(this);
                    astST.close();
                    astST2.close();
@@ -417,7 +456,7 @@ public class UserInterface {
                 
                 
                 
-                
+                as1.remove(lblsec);
                 as1.remove(lblas);
                 as1.remove(lblsec);
                 as1.remove(bas2); //test1
@@ -454,6 +493,7 @@ public class UserInterface {
                 as1.remove(bas2);
                 as1.remove(asec);
                 as1.setVisible(false);
+                as1.dispose();
                 f.dispose();
                 f.setVisible(true); 
                 bas2.removeActionListener(this);
@@ -483,6 +523,7 @@ public class UserInterface {
                 as1.remove(asec);
                 as1.removeWindowListener(this);
                 f.setVisible(true);
+                as1.dispose();
                 as1.dispatchEvent(new WindowEvent(as1, WindowEvent.WINDOW_CLOSING));
                 for( ActionListener al : bas2.getActionListeners() ) {
                 bas2.removeActionListener( al );
@@ -624,18 +665,103 @@ public class UserInterface {
             
         }
         
-        public void UIEditGradeComponent(){
+        public void UIEditGradeComponent()
+        {
+            gs.setVisible(false);
+            JButton egcB1 = new JButton("Edit Percentage");
+            JButton egcB2 = new JButton("Back");
             
-            JLabel wwlbl = new JLabel("Written Works:");
-            JLabel ltlbl = new JLabel("Long Test:");
-            JLabel ptlbl = new JLabel("Performance Task:");
+            egcB1.setBounds(10,10,130,20);
+            egcB2.setBounds(10,30,130,20);
+            ep.add(egcB2);
+            ep.add(egcB1);
             
-            JTextField ww = new JTextField();
-            JTextField lt = new JTextField();
-            JTextField pt = new JTextField();
+            egcB1.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                egc.dispose();
+                egcB1.removeActionListener(this);
+                UIEditPercentage();
+                gs.setVisible(true);
+                }
+            }
+                );
             
-            JButton bts = new JButton("Submit");
-            JButton btc = new JButton("Cancel");
+            egcB2.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                UIGradingSystem();
+                ep.dispose();
+                }
+            });
+            
+            ep.setLayout(null);
+            ep.setSize(250,200);
+            ep.setVisible(true);
+            ep.setLocationRelativeTo(null);
+            
+        }
+        
+            public void UIEditPercentage(){
+
+                JLabel wwlbl = new JLabel("Written Works:");
+                JLabel ltlbl = new JLabel("Long Test:");
+                JLabel ptlbl = new JLabel("Performance Task:");
+
+                JTextField ww = new JTextField();
+                JTextField lt = new JTextField();
+                JTextField pt = new JTextField();
+
+                JButton bts = new JButton("Submit");
+                JButton btc = new JButton("Cancel");
+
+                bts.addActionListener(new ActionListener()
+                {
+                    public void actionPerformed(ActionEvent e)
+                    {
+                     try
+                {
+
+
+                String sqlUpdatePercentage = "UPDATE Percentage "
+                        + "SET PerformanceTask =? WHERE ID = 1" ;
+                String sqlUpdatePercentage2 = "UPDATE Percentage "
+                        + "SET WrittenWork =? WHERE ID = 1" ;
+                String sqlUpdatePercentage3 = "UPDATE Percentage "
+                        + "SET Test =? WHERE ID = 1" ;
+                PreparedStatement UpdateSTMT = con.prepareStatement(sqlUpdatePercentage);
+                PreparedStatement UpdateSTMT2 = con.prepareStatement(sqlUpdatePercentage2);
+                PreparedStatement UpdateSTMT3 = con.prepareStatement(sqlUpdatePercentage3);
+                
+                float ParsePT = Float.parseFloat(pt.getText());
+                float ParseWW = Float.parseFloat(ww.getText());
+                float ParseLT = Float.parseFloat(lt.getText());
+                
+                float percentDecimal1 = ParsePT / 100;
+                float percentDecimal2 = ParseWW / 100;
+                float percentDecimal3 = ParseLT / 100;       
+                
+                String PT = String.valueOf(percentDecimal1);
+                String WW = String.valueOf(percentDecimal2);
+                String LT = String.valueOf(percentDecimal3);
+                
+                UpdateSTMT.setString(1,PT);
+                UpdateSTMT2.setString(1,WW);
+                UpdateSTMT3.setString(1,LT);
+
+                UpdateSTMT.executeUpdate();
+                UpdateSTMT2.executeUpdate();
+                UpdateSTMT3.executeUpdate();
+                }
+                catch (SQLException f)
+                {
+                    f.printStackTrace();
+                }   
+                    }    
+                    });
+            
             
             wwlbl.setBounds(20,30,110,20);
             ltlbl.setBounds(20,50,110,20);
@@ -800,6 +926,18 @@ public class UserInterface {
             }
         }
         
+        public class UIAddSection implements ActionListener{
+        @Override
+                public void actionPerformed(ActionEvent e)                   
+                {
+                    f.setVisible(false);
+                    bm2 = (JButton)e.getSource();
+                    System.out.println("Add Section");
+                    UIAddSection();
+                    
+                }
+        }
+        
         public class UIGradingSystem implements ActionListener {
         @Override
             public void actionPerformed(ActionEvent e) 
@@ -807,7 +945,7 @@ public class UserInterface {
                 f.setVisible(false);
                 bm1 = (JButton)e.getSource();
                 UIGradingSystem();
-                ag.setVisible(false);
+                //ag.setVisible(false);
                 
                 /*try
                 {
@@ -837,7 +975,7 @@ public class UserInterface {
             }
         }
         
-     
+        
         
         public class UIAddStudent implements ActionListener {
         @Override
