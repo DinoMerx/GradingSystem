@@ -556,9 +556,9 @@ public class UserInterface {
             @Override
             public void windowClosing(WindowEvent e) {
                 ast.remove(enterName);
-                     ast.remove(enterNameTF);
-                     ast.remove(ASTSubmit);
-                     ast.remove(ASTBack);   
+                    ast.remove(enterNameTF);
+                    ast.remove(ASTSubmit);
+                    ast.remove(ASTBack);   
                 ast.removeWindowListener(this);
             }
         });
@@ -625,25 +625,41 @@ public class UserInterface {
         }
         
         public void UIEditGradeComponent(){
-            String[] columnNames = {"StudentID", "LastName", "FirstName", "Middle Name"};
             
-            String[][] data = {
-                {"2019105311", "GARCIA", "DIGGO KID ANDRES", "PALISOC"}
-            };
+            JLabel wwlbl = new JLabel("Written Works:");
+            JLabel ltlbl = new JLabel("Long Test:");
+            JLabel ptlbl = new JLabel("Performance Task:");
             
-            JTable egctable = new JTable(data, columnNames);
+            JTextField ww = new JTextField();
+            JTextField lt = new JTextField();
+            JTextField pt = new JTextField();
             
-            JScrollPane egcsp = new JScrollPane(egctable);
+            JButton bts = new JButton("Submit");
+            JButton btc = new JButton("Cancel");
             
-            egcsp.setBounds(150,10,600,500);
-            tableList.setBounds(20,10,110,20);
+            wwlbl.setBounds(20,30,110,20);
+            ltlbl.setBounds(20,50,110,20);
+            ptlbl.setBounds(20,70,110,20);
             
-            egc.add(egcsp);
-            egc.add(tableList);
+            ww.setBounds(150,30,50,20);
+            lt.setBounds(150,50,50,20);
+            pt.setBounds(150,70,50,20);
+            
+            bts.setBounds(20,100,80,20);
+            btc.setBounds(120,100,80,20);
+            
+            egc.add(wwlbl);
+            egc.add(ltlbl);
+            egc.add(ptlbl);
+            egc.add(ww);
+            egc.add(lt);
+            egc.add(pt);
+            egc.add(bts);
+            egc.add(btc);
             
             egc.setLayout(null);
             egc.setVisible(true);
-            egc.setSize(800,720);
+            egc.setSize(250,200);
             egc.setLocationRelativeTo(null);
         }
         
