@@ -752,7 +752,7 @@ public class UserInterface {
         }
         
         public void UIStudentGrade() {
-            DefaultTableModel cn = new DefaultTableModel(new String[]{"id", "FULL_NAME"}, 0);
+            DefaultTableModel cn = new DefaultTableModel(new String[]{"ID", "Fullname", "WrittenWork", "PerformanceTask", "Test"}, 0);
             JTable sgtb = new JTable(cn);
             
             String databaseURL = "jdbc:ucanaccess://src/resources/GradingSystem.accdb";
@@ -762,7 +762,7 @@ public class UserInterface {
             PreparedStatement pst = null;
             
             try {
-            
+                
                 con = DriverManager.getConnection(databaseURL);
                 pst = con.prepareStatement("Select * FROM "+sectionList.getSelectedItem());
                 
@@ -772,7 +772,10 @@ public class UserInterface {
             while(rs.next()){
                 String a = rs.getString("id");
                 String b = rs.getString("FULL_NAME");
-                cn.addRow(new Object[]{a, b});
+                String c = rs.getString("WrittenWork");
+                String d = rs.getString("PerformanceTast");
+                String e = rs.getString("Test");
+                cn.addRow(new Object[]{a, b, c, d, e});
             }    
                 
             } catch (SQLException e) {
