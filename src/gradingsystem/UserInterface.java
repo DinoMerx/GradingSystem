@@ -64,6 +64,15 @@ public class UserInterface {
                     Test=Float.parseFloat(Test);
                 }*/
     
+    public ActionListener actionListener = new ActionListener()
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+                UIAddSection();
+                }   
+        
+    };
+    
     // JFrames
     final JFrame gs = new JFrame("Grading System");
     final JFrame as1 = new JFrame("Add Section");
@@ -166,14 +175,17 @@ public class UserInterface {
             pbm2.setBounds(180,100,150,150);
             pbm2.setLayout(null);
             bm2.setBounds(20,100,110,20);
-            bm2.addActionListener(new UIAddSection());
-                    
+            
+            
+            
+            
             JLabel bm2lbl = new JLabel("<html><div style='text-align: center;'>This is where you Add Section</div><html>");
             bm2lbl.setBounds(20,20,110,50);
             pbm2.add(bm2lbl);
             pbm2.add(bm2);
             
-            
+            bm2.removeActionListener(actionListener);
+            bm2.addActionListener(actionListener);
             
             mlbl.setBounds(120,40,110,20);
             sectionList.setBounds(110,60,110,20);
@@ -303,6 +315,7 @@ public class UserInterface {
         }
         
         public void UIAddSection(){
+            f.setVisible(false);
             JLabel lblas = new JLabel("Add Section");
             JLabel lblsec = new JLabel("Section:");
             
@@ -824,14 +837,7 @@ public class UserInterface {
             }
         }
         
-        public class UIAddSection implements ActionListener {
-        @Override
-            public void actionPerformed(ActionEvent e) {
-                f.setVisible(false);
-                bm2 = (JButton)e.getSource();
-                UIAddSection();
-            }
-        }
+     
         
         public class UIAddStudent implements ActionListener {
         @Override
