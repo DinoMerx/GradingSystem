@@ -103,7 +103,7 @@ public class UserInterface {
     JButton bgs1 = new JButton("Add Student");
     JButton bgs2 = new JButton("Add Grade");
     JButton bgs3 = new JButton("Edit Grade Component");
-    JButton bgs4 = new JButton("Edit Student Grade");
+    JButton bgs4 = new JButton("Add Subject");
     JButton bgs5 = new JButton("Back");
     
     //Add Grade
