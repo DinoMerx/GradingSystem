@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.sql.*;
 import javax.sql.*;
 import javax.swing.border.*;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author DinoMerx
@@ -83,6 +84,7 @@ public class UserInterface {
     final JFrame egc = new JFrame("Edit Grade Component");
     final JFrame esg = new JFrame("Edit Student Grade");
     final JFrame f = new JFrame("Grading System");
+    final JFrame sg = new JFrame("Student Grade");
     final JFrame EW = new JFrame("Error: Section Already Exists!");
     
     //Menu Inputs
@@ -90,6 +92,7 @@ public class UserInterface {
     JButton bm2 = new JButton("Add Section");
     JLabel mlbl = new JLabel("Grading System");   
     JComboBox sectionList = new JComboBox();
+    JComboBox sectionList1 = new JComboBox();
     
     //Add Section Inputs
     JTextField asec = new JTextField("enter input");
@@ -104,7 +107,8 @@ public class UserInterface {
     JButton bgs2 = new JButton("Add Grade");
     JButton bgs3 = new JButton("Edit Grade Component");
     JButton bgs4 = new JButton("Edit Student Grade");
-    JButton bgs5 = new JButton("Back");
+    JButton bgs5 = new JButton("View Student Grade");
+    JButton bgs6 = new JButton("Back");
     
     //Add Grade
     JButton submit = new JButton("Submit");
@@ -120,7 +124,10 @@ public class UserInterface {
     //Edit Grade Component
     JComboBox tableList = new JComboBox();
     String selectedSection;  
-    JLabel enterName = new JLabel("Full Name (Temporary)");  
+    JLabel enterName = new JLabel("Full Name (Temporary)");
+    
+    //View Student Grade
+    JButton sgback = new JButton("Back");
 
     
     
@@ -265,12 +272,14 @@ public class UserInterface {
             bgs3.setBounds(60,140,160,20);
             bgs4.setBounds(60,170,160,20);
             bgs5.setBounds(60,200,160,20);
+            bgs6.setBounds(60,230,160,20);
             
             bgs1.addActionListener(new UIAddStudent());
             bgs2.addActionListener(new UIAddGrade());
             bgs3.addActionListener(new UIEditGradeComponent());
             bgs4.addActionListener(new UIEditStudentGrade());
-            bgs5.addActionListener(new ActionListener() //bgs5 cancel
+            bgs5.addActionListener(new UIStudentGrade());
+            bgs6.addActionListener(new ActionListener()
             {
                 public void actionPerformed(ActionEvent e)
                 {
@@ -282,6 +291,7 @@ public class UserInterface {
                 gs.remove(bgs3);
                 gs.remove(bgs4);
                 gs.remove(bgs5);
+                gs.remove(bgs6);
                 gs.dispose();
                 }
             });
@@ -293,10 +303,11 @@ public class UserInterface {
             gs.add(bgs3);
             gs.add(bgs4);
             gs.add(bgs5);
+            gs.add(bgs6);
             
             gs.setLayout(null);
             gs.setVisible(true);
-            gs.setSize(300,300);
+            gs.setSize(300,320);
             
             gs.addWindowListener(new WindowAdapter() {
             @Override
@@ -593,7 +604,6 @@ public class UserInterface {
                 ag.remove(submit);
                 ag.remove(cancel);
                 ag.remove(text1);
-                f.setVisible(true);
                 cancel.removeActionListener(this);
                 }
             });
@@ -741,6 +751,62 @@ public class UserInterface {
             esg.setSize(300,200);
         }
         
+        public void UIStudentGrade() {
+            DefaultTableModel cn = new DefaultTableModel(new String[]{"id", "FULL_NAME"}, 0);
+            JTable sgtb = new JTable(cn);
+            
+            String databaseURL = "jdbc:ucanaccess://src/resources/GradingSystem.accdb";
+        
+            Connection con = null;
+            Statement st = null;
+            PreparedStatement pst = null;
+            
+            try {
+            
+                con = DriverManager.getConnection(databaseURL);
+                pst = con.prepareStatement("Select * FROM "+sectionList.getSelectedItem());
+                
+                
+                ResultSet rs = pst.executeQuery();
+                
+            while(rs.next()){
+                String a = rs.getString("id");
+                String b = rs.getString("FULL_NAME");
+                cn.addRow(new Object[]{a, b});
+            }    
+                
+            } catch (SQLException e) {
+            
+                e.printStackTrace();
+            
+            }
+            
+            JScrollPane egcsp = new JScrollPane(sgtb);
+            
+            sgback.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                gs.setVisible(true); 
+                sg.remove(sgback);
+                sg.remove(egcsp);
+                sg.dispose();
+                }
+            });
+            
+            egcsp.setBounds(150,10,600,500);
+            
+            sgback.setBounds(20,20,100,20);
+            
+            sg.add(egcsp);
+            sg.add(sgback);
+            
+            sg.setLayout(null);
+            sg.setVisible(true);
+            sg.setSize(800,720);
+            sg.setLocationRelativeTo(null);
+        }
+        
         public class Submit implements ActionListener{
         @Override
             public void actionPerformed(ActionEvent e) {
@@ -837,8 +903,6 @@ public class UserInterface {
             }
         }
         
-     
-        
         public class UIAddStudent implements ActionListener {
         @Override
             public void actionPerformed(ActionEvent e) {
@@ -872,6 +936,16 @@ public class UserInterface {
                 UIEditStudentGrade();
             }
         }
+        
+        public class UIStudentGrade implements ActionListener {
+        @Override
+            public void actionPerformed(ActionEvent e) {
+                bgs6 = (JButton)e.getSource();
+                
+                UIStudentGrade();
+            }
+        }
+        
 }
 
         class RoundedPanel extends JPanel
