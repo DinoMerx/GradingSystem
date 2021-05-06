@@ -19,21 +19,7 @@ public class GradingSystem {
      */
     
     
-    public static void gui(){
-        JPanel exit = new JPanel();
-        JPanel minimize = new JPanel();
-    
-        JFrame f = new JFrame();
-        
-        f.setVisible(true);
-        f.setSize(600,400);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        exit.setBackground(Color.red);
-        
-        f.add(exit);
-        
-    }
+
     
     public static void main(String[] args) {
         UserInterface UIObject = new UserInterface();

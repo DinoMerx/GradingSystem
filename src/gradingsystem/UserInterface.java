@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.sql.*;
 import javax.sql.*;
 import javax.swing.border.*;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author DinoMerx
@@ -84,6 +85,7 @@ public class UserInterface {
     final JFrame ep = new JFrame("Edit Percentage");
     final JFrame esg = new JFrame("Edit Student Grade");
     final JFrame f = new JFrame("Grading System");
+    final JFrame sg = new JFrame("Student Grade");
     final JFrame EW = new JFrame("Error: Section Already Exists!");
     
     //Menu Inputs
@@ -91,6 +93,7 @@ public class UserInterface {
     JButton bm2 = new JButton("Add Section");
     JLabel mlbl = new JLabel("Grading System");   
     JComboBox sectionList = new JComboBox();
+    JComboBox sectionList1 = new JComboBox();
     
     //Add Section Inputs
     JTextField asec = new JTextField("enter input");
@@ -104,8 +107,9 @@ public class UserInterface {
     JButton bgs1 = new JButton("Add Student");
     JButton bgs2 = new JButton("Add Grade");
     JButton bgs3 = new JButton("Edit Grade Component");
-    JButton bgs4 = new JButton("Add Subject");
-    JButton bgs5 = new JButton("Back");
+    JButton bgs4 = new JButton("Edit Student Grade");
+    JButton bgs5 = new JButton("View Student Grade");
+    JButton bgs6 = new JButton("Back");
     
     //Add Grade
     JButton submit = new JButton("Submit");
@@ -121,7 +125,10 @@ public class UserInterface {
     //Edit Grade Component
     JComboBox tableList = new JComboBox();
     String selectedSection;  
-    JLabel enterName = new JLabel("Full Name (Temporary)");  
+    JLabel enterName = new JLabel("Full Name (Temporary)");
+    
+    //View Student Grade
+    JButton sgback = new JButton("Back");
 
     
     
@@ -265,6 +272,7 @@ public class UserInterface {
             bgs3.setBounds(60,140,160,20);
             bgs4.setBounds(60,170,160,20);
             bgs5.setBounds(60,200,160,20);
+            bgs6.setBounds(60,230,160,20);
             
             bgs1.addActionListener(new UIAddStudent());
             bgs2.addActionListener(new UIAddGrade());
@@ -284,7 +292,8 @@ public class UserInterface {
                 }
             });
             bgs4.addActionListener(new UIEditStudentGrade());
-            bgs5.addActionListener(new ActionListener() //bgs5 cancel
+            bgs5.addActionListener(new UIStudentGrade());
+            bgs6.addActionListener(new ActionListener()
             {
                 public void actionPerformed(ActionEvent e)
                 {
@@ -296,6 +305,7 @@ public class UserInterface {
                 gs.remove(bgs3);
                 gs.remove(bgs4);
                 gs.remove(bgs5);
+                gs.remove(bgs6);
                 gs.dispose();
                 }
             });
@@ -307,10 +317,11 @@ public class UserInterface {
             gs.add(bgs3);
             gs.add(bgs4);
             gs.add(bgs5);
+            gs.add(bgs6);
             
             gs.setLayout(null);
             gs.setVisible(true);
-            gs.setSize(300,300);
+            gs.setSize(300,320);
             
             gs.addWindowListener(new WindowAdapter() {
             @Override
@@ -616,12 +627,34 @@ public class UserInterface {
         }
         
         public void UIAddGrade(){
-            JLabel text1 = new JLabel("Input Component:");
+            JLabel text1 = new JLabel("Select component type: ");
+            JLabel text2 = new JLabel("Number: ");
+            JComboBox numberList = new JComboBox();
+            numberList.addItem("1");
+            numberList.addItem("2");
+            numberList.addItem("3");
+            numberList.addItem("4");
+            numberList.addItem("5");
+            numberList.addItem("6");
+            numberList.addItem("7");
+            numberList.addItem("8");
+            numberList.addItem("9");
+            numberList.addItem("10");
+            
+            
+            JComboBox componentList = new JComboBox();
+            componentList.addItem("Performance Task");
+            componentList.addItem("Long Test");
+            componentList.addItem("Written Works");
+            
+            componentList.setBounds(20,30,150,20);
+            numberList.setBounds(80,60,50,20);
             
             textfield1.setBounds(150,10,120,20);
-            text1.setBounds(20,10,110,20);
-            submit.setBounds(60,40,80,20);
-            cancel.setBounds(150,40,80,20);
+            text1.setBounds(20,10,150,20);
+            text2.setBounds(20,60,150,20);
+            submit.setBounds(60,200,80,20);
+            cancel.setBounds(150,200,80,20);
             
             submit.addActionListener(new Submit());
             cancel.addActionListener(new ActionListener()
@@ -634,15 +667,16 @@ public class UserInterface {
                 ag.remove(submit);
                 ag.remove(cancel);
                 ag.remove(text1);
-                f.setVisible(true);
                 cancel.removeActionListener(this);
                 }
             });
-
+            ag.add(numberList);
+            ag.add(componentList);
             ag.setLayout(null);
-            ag.setSize(300,120);
+            ag.setSize(300,500);
             ag.add(text1);
-            ag.add(textfield1);
+            
+            ag.add(text2);
             ag.add(submit);
             ag.add(cancel);
             ag.setLocationRelativeTo(null);
@@ -867,6 +901,62 @@ public class UserInterface {
             esg.setSize(300,200);
         }
         
+        public void UIStudentGrade() {
+            DefaultTableModel cn = new DefaultTableModel(new String[]{"id", "FULL_NAME"}, 0);
+            JTable sgtb = new JTable(cn);
+            
+            String databaseURL = "jdbc:ucanaccess://src/resources/GradingSystem.accdb";
+        
+            Connection con = null;
+            Statement st = null;
+            PreparedStatement pst = null;
+            
+            try {
+            
+                con = DriverManager.getConnection(databaseURL);
+                pst = con.prepareStatement("Select * FROM "+sectionList.getSelectedItem());
+                
+                
+                ResultSet rs = pst.executeQuery();
+                
+            while(rs.next()){
+                String a = rs.getString("id");
+                String b = rs.getString("FULL_NAME");
+                cn.addRow(new Object[]{a, b});
+            }    
+                
+            } catch (SQLException e) {
+            
+                e.printStackTrace();
+            
+            }
+            
+            JScrollPane egcsp = new JScrollPane(sgtb);
+            
+            sgback.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                gs.setVisible(true); 
+                sg.remove(sgback);
+                sg.remove(egcsp);
+                sg.dispose();
+                }
+            });
+            
+            egcsp.setBounds(150,10,600,500);
+            
+            sgback.setBounds(20,20,100,20);
+            
+            sg.add(egcsp);
+            sg.add(sgback);
+            
+            sg.setLayout(null);
+            sg.setVisible(true);
+            sg.setSize(800,720);
+            sg.setLocationRelativeTo(null);
+        }
+        
         public class Submit implements ActionListener{
         @Override
             public void actionPerformed(ActionEvent e) {
@@ -975,8 +1065,6 @@ public class UserInterface {
             }
         }
         
-        
-        
         public class UIAddStudent implements ActionListener {
         @Override
             public void actionPerformed(ActionEvent e) {
@@ -1010,6 +1098,16 @@ public class UserInterface {
                 UIEditStudentGrade();
             }
         }
+        
+        public class UIStudentGrade implements ActionListener {
+        @Override
+            public void actionPerformed(ActionEvent e) {
+                bgs6 = (JButton)e.getSource();
+                
+                UIStudentGrade();
+            }
+        }
+        
 }
 
         class RoundedPanel extends JPanel
