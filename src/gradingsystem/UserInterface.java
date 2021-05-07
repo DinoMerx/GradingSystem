@@ -402,20 +402,8 @@ public class UserInterface {
                     Connection ASTCon = DriverManager.getConnection(databaseURL);
                     Statement astST = ASTCon.createStatement();
                     
-                ResultSet data = dbm.getTables(null, null, "%", null);
-                while(data.next())
-                {
-                if(data.getString(3).equals("GENERICINSERT_PLACEHOLDER"))
-                {
-                    String sqlDELETE = "DROP GENERICINSERT_PLACEHOLDER";
-                    Statement stDEL = con.createStatement();
-                    stDEL.execute(sqlDELETE);
-                    stDEL.close();
-                }
-                }
-                     
                     String asSQL = "CREATE TABLE PLACEHOLDER "  +
-                                   "(id AUTOINCREMENT PRIMARY KEY, FULL_NAME varchar(255), PERFORMANCE_TASK float, WRITTEN_WORK float, LONG_TEST float, WEIGHTED_AVERAGE  "
+                                   "(id AUTOINCREMENT PRIMARY KEY, FULL_NAME varchar(255), PERFORMANCE_TASK float, WRITTEN_WORK float, LONG_TEST float, WEIGHTED_AVERAGE float"
                                  + ")";
                     String asSQL2 ="ALTER TABLE PLACEHOLDER" +
                                    " RENAME TO " + asec.getText();
@@ -438,11 +426,11 @@ public class UserInterface {
                     
                     
                     PreparedStatement astST2 = ASTCon.prepareStatement(asSQL3);
-                    
+                               
                     
                     
                     sectionList.addItem(asec.getText());
-                   
+
                     
                    
                    astST.execute(asSQL);
@@ -484,12 +472,7 @@ public class UserInterface {
                 {
                     p.printStackTrace();
                 }
-               
-                
-                
-                
-                
-                
+
                 }
             });
             
@@ -698,25 +681,72 @@ public class UserInterface {
                     String TFStringValue = textScorefield.getText();
                     System.out.println("Stored value: " + TFStringValue);
                     System.out.println(textScorefield.getText());
-                    String sql = "UPDATE " + selectedSection + " SET PERFORMANCE_TASK = PERFORMANCE_TASK + ? WHERE FULL_NAME = ?";
+                    String sql = "UPDATE " + selectedSection + " SET PERFORMANCE_TASK = PERFORMANCE_TASK - ? WHERE FULL_NAME = ?";
+                    
+                    
+                    String NumberVal = numberList.getSelectedItem().toString();
+                    PreparedStatement AddGradeST = con.prepareStatement(sql);
+                    
+                    
+                    
+                    float intScoreTF = Float.parseFloat(TFStringValue);
+                    int intNumber = Integer.parseInt(NumberVal);
+                    
+                    
+                    String sq2 = "UPDATE " + selectedSection +"GRADES SET PERFORMANCE_TASK = ? WHERE ID = ?";
+                    PreparedStatement SectionGradesT = con.prepareStatement(sq2);
+                    SectionGradesT.setFloat(1,intScoreTF);
+                    SectionGradesT.setInt(2,intNumber);
+                    SectionGradesT.executeUpdate();
+                    
+                    AddGradeST.setFloat(1, intScoreTF);
+                    AddGradeST.setString(2,(String)studentList.getSelectedItem());
+                    
+                    AddGradeST.executeUpdate();
+ 
+                }
+                else if ( componentList.getSelectedItem() == "Long Test")
+                {
+                    String TFStringValue = textScorefield.getText();
+                    System.out.println("Stored value: " + TFStringValue);
+                    System.out.println(textScorefield.getText());
+                    String sql = "UPDATE " + selectedSection + " SET LONG_TEST = LONG_TEST + ? WHERE FULL_NAME = ?";
                     PreparedStatement AddGradeST = con.prepareStatement(sql);
                     
                     float intScoreTF = Float.parseFloat(TFStringValue);
                     AddGradeST.setFloat(1, intScoreTF);
                     AddGradeST.setString(2,(String)studentList.getSelectedItem());
-                    
+                    String NumberVal = numberList.getSelectedItem().toString();
+                    int intNumber = Integer.parseInt(NumberVal);
+                    String sq2 = "UPDATE " + selectedSection +"GRADES SET LONG_TEST = ? WHERE ID = ?";
+                    PreparedStatement SectionGradesT = con.prepareStatement(sq2);
+                    SectionGradesT.setFloat(1,intScoreTF);
+                    SectionGradesT.setInt(2,intNumber);
+                    SectionGradesT.executeUpdate();
                     AddGradeST.executeUpdate();
-                    
-                    
-                    
-                    
-                }
-                else if ( componentList.getSelectedItem() == "Long Test")
-                {
-                    
                 }
                 else if ( componentList.getSelectedItem() == "Written Works")
                 {
+                    String TFStringValue = textScorefield.getText();
+                    System.out.println("Stored value: " + TFStringValue);
+                    System.out.println(textScorefield.getText());
+                    String sql = "UPDATE " + selectedSection + " SET WRITTEN_WORK = WRITTEN_WORK + ? WHERE FULL_NAME = ?";
+                    PreparedStatement AddGradeST = con.prepareStatement(sql);
+                    
+                    float intScoreTF = Float.parseFloat(TFStringValue);
+                    AddGradeST.setFloat(1, intScoreTF);
+                    AddGradeST.setString(2,(String)studentList.getSelectedItem());
+                    AddGradeST.executeUpdate();
+                    AddGradeST.setFloat(1, intScoreTF);
+                    AddGradeST.setString(2,(String)studentList.getSelectedItem());
+                    String NumberVal = numberList.getSelectedItem().toString();
+                    int intNumber = Integer.parseInt(NumberVal);
+                    String sq2 = "UPDATE " + selectedSection +"GRADES SET WRITTEN_WORK = ? WHERE ID = ?";
+                    PreparedStatement SectionGradesT = con.prepareStatement(sq2);
+                    SectionGradesT.setFloat(1,intScoreTF);
+                    SectionGradesT.setInt(2,intNumber);
+                    SectionGradesT.executeUpdate();
+                    AddGradeST.executeUpdate();
                     
                 }
                 }
