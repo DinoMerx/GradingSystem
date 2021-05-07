@@ -307,6 +307,7 @@ public class UserInterface {
                 gs.remove(bgs5);
                 gs.remove(bgs6);
                 gs.dispose();
+                bgs6.removeActionListener(this);
                 }
             });
             gs.setLocationRelativeTo(null);   
@@ -414,7 +415,7 @@ public class UserInterface {
                 }
                      
                     String asSQL = "CREATE TABLE PLACEHOLDER "  +
-                                   "(id AUTOINCREMENT PRIMARY KEY, FULL_NAME varchar(255), PERFORMANCE_TASK float, WRITTEN_WORK float, LONG_TEST float "
+                                   "(id AUTOINCREMENT PRIMARY KEY, FULL_NAME varchar(255), PERFORMANCE_TASK float, WRITTEN_WORK float, LONG_TEST float, WEIGHTED_AVERAGE  "
                                  + ")";
                     String asSQL2 ="ALTER TABLE PLACEHOLDER" +
                                    " RENAME TO " + asec.getText();
@@ -570,9 +571,13 @@ public class UserInterface {
                     System.out.println(selectedSection);
                     //String astSQL2 = "ALTER TABLE A01"
                             //+ " RENAME TO " + name; 
-                    String astSQL2 = "INSERT INTO " + selectedSection + " (FULL_NAME) VALUES (?)";
+                    String astSQL2 = "INSERT INTO " + selectedSection + " (FULL_NAME,PERFORMANCE_TASK,WRITTEN_WORK,LONG_TEST,WEIGHTED_AVERAGE) VALUES (?,?,?,?,?)";
                     PreparedStatement astPS = ASTCon.prepareStatement(astSQL2);
                     astPS.setString(1,name);
+                    astPS.setInt(2,0);
+                    astPS.setInt(3,0);
+                    astPS.setInt(4,0);
+                    astPS.setInt(5,0);
                     astPS.executeUpdate();   
                     astPS.close();
                     // database code here
@@ -630,9 +635,26 @@ public class UserInterface {
             JLabel textS = new JLabel("Select Student: ");
             JLabel text1 = new JLabel("Select component type: ");
             JLabel text2 = new JLabel("Number: ");
+            JLabel textScore = new JLabel("Score: ");
             
+            JTextField textScorefield = new JTextField();
             JComboBox studentList = new JComboBox();
-             
+           
+            try
+            {
+            PreparedStatement studentST;
+            String studentSQL = "SELECT FULL_NAME FROM " + selectedSection;
+            studentST = con.prepareStatement(studentSQL);
+            ResultSet studentRS = studentST.executeQuery();
+            while(studentRS.next())
+            {
+                studentList.addItem(studentRS.getString("FULL_NAME"));
+            }
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
             JComboBox numberList = new JComboBox();
             
             numberList.addItem("1");
@@ -658,33 +680,83 @@ public class UserInterface {
             textfield1.setBounds(150,10,120,20);
             text1.setBounds(20,10,150,20);
             text2.setBounds(20,60,150,20);
-            submit.setBounds(60,200,80,20);
-            cancel.setBounds(150,200,80,20);
+            textS.setBounds(20,80,150,20);
+            submit.setBounds(60,150,80,20);
+            cancel.setBounds(150,150,80,20);
+            textScore.setBounds(20,130,80,20);
+            textScorefield.setBounds(100,130,80,20);
+            studentList.setBounds(10,100,270,20);
             
-            submit.addActionListener(new Submit());
+            submit.addActionListener(new Submit()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                try
+                {
+                if( componentList.getSelectedItem() == "Performance Task" )
+                {
+                    String TFStringValue = textScorefield.getText();
+                    System.out.println("Stored value: " + TFStringValue);
+                    System.out.println(textScorefield.getText());
+                    String sql = "UPDATE " + selectedSection + " SET PERFORMANCE_TASK = PERFORMANCE_TASK + ? WHERE FULL_NAME = ?";
+                    PreparedStatement AddGradeST = con.prepareStatement(sql);
+                    
+                    float intScoreTF = Float.parseFloat(TFStringValue);
+                    AddGradeST.setFloat(1, intScoreTF);
+                    AddGradeST.setString(2,(String)studentList.getSelectedItem());
+                    
+                    AddGradeST.executeUpdate();
+                    
+                    
+                    
+                    
+                }
+                else if ( componentList.getSelectedItem() == "Long Test")
+                {
+                    
+                }
+                else if ( componentList.getSelectedItem() == "Written Works")
+                {
+                    
+                }
+                }
+                catch(Exception f)
+                {
+                    f.printStackTrace();
+                }
+                
+                }
+            });
             cancel.addActionListener(new ActionListener()
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                gs.setVisible(true);
-                ag.setVisible(false);
+                ag.remove(text1);
                 ag.remove(textfield1);
                 ag.remove(submit);
                 ag.remove(cancel);
-                ag.remove(text1);
+                ag.remove(numberList);
+                ag.remove(componentList);
+                ag.remove(textS);
                 ag.remove(text2);
+                ag.remove(textScorefield);
+                ag.remove(textScore);
+                ag.setVisible(false);
                 cancel.removeActionListener(this);
                 }
             });
+            ag.add(studentList);
             ag.add(numberList);
             ag.add(componentList);
             ag.setLayout(null);
-            ag.setSize(300,500);
+            ag.setSize(300,250);
             ag.add(text1);
-            
+            ag.add(textS);
             ag.add(text2);
             ag.add(submit);
             ag.add(cancel);
+            ag.add(textScorefield);
+            ag.add(textScore);
             ag.setLocationRelativeTo(null);
             ag.setVisible(true);
             
@@ -698,6 +770,12 @@ public class UserInterface {
                 ag.remove(textfield1);
                 ag.remove(submit);
                 ag.remove(cancel);
+                ag.remove(numberList);
+                ag.remove(componentList);
+                ag.remove(textS);
+                ag.remove(text2);
+                ag.remove(textScorefield);
+                ag.remove(textScore);
                 ag.removeWindowListener(this);
                 
                 }
