@@ -627,9 +627,14 @@ public class UserInterface {
         }
         
         public void UIAddGrade(){
+            JLabel textS = new JLabel("Select Student: ");
             JLabel text1 = new JLabel("Select component type: ");
             JLabel text2 = new JLabel("Number: ");
+            
+            JComboBox studentList = new JComboBox();
+             
             JComboBox numberList = new JComboBox();
+            
             numberList.addItem("1");
             numberList.addItem("2");
             numberList.addItem("3");
@@ -667,6 +672,7 @@ public class UserInterface {
                 ag.remove(submit);
                 ag.remove(cancel);
                 ag.remove(text1);
+                ag.remove(text2);
                 cancel.removeActionListener(this);
                 }
             });
@@ -717,7 +723,7 @@ public class UserInterface {
                 egc.dispose();
                 egcB1.removeActionListener(this);
                 UIEditPercentage();
-                gs.setVisible(true);
+                gs.setVisible(false);
                 }
             }
                 );
@@ -922,9 +928,9 @@ public class UserInterface {
             while(rs.next()){
                 String a = rs.getString("id");
                 String b = rs.getString("FULL_NAME");
-                String c = rs.getString("WrittenWork");
-                String d = rs.getString("PerformanceTast");
-                String e = rs.getString("Test");
+                String c = rs.getString("WRITTEN_WORK");
+                String d = rs.getString("PERFORMANCE_TASK");
+                String e = rs.getString("LONG_TEST");
                 cn.addRow(new Object[]{a, b, c, d, e});
             }    
                 
