@@ -14,6 +14,8 @@ import java.sql.Statement;
 import java.sql.*;
 import javax.sql.*;
 import javax.swing.border.*;
+import java.math.*;
+import java.text.DecimalFormat;
 import javax.swing.table.DefaultTableModel;
 /**
  *
@@ -31,6 +33,11 @@ public class UserInterface {
     String PerformanceTask;
     String WrittenWork;
     String Test;
+    
+    JComboBox numberList = new JComboBox();
+            
+    
+            
     //calculation
     /*
     PERFORMANCETASKTOTAL
@@ -83,7 +90,7 @@ public class UserInterface {
     final JFrame ag = new JFrame("Add Grade");
     final JFrame egc = new JFrame("Edit Grade Component");
     final JFrame ep = new JFrame("Edit Percentage");
-    final JFrame esg = new JFrame("Edit Student Grade");
+    final JFrame ds = new JFrame("Deduct Student Grade");
     final JFrame f = new JFrame("Grading System");
     final JFrame sg = new JFrame("Student Grade");
     final JFrame EW = new JFrame("Error: Section Already Exists!");
@@ -107,7 +114,7 @@ public class UserInterface {
     JButton bgs1 = new JButton("Add Student");
     JButton bgs2 = new JButton("Add Grade");
     JButton bgs3 = new JButton("Edit Grade Component");
-    JButton bgs4 = new JButton("Edit Student Grade");
+    JButton bgs4 = new JButton("Deduct Student Grade");
     JButton bgs5 = new JButton("View Student Grade");
     JButton bgs6 = new JButton("Back");
     
@@ -115,6 +122,10 @@ public class UserInterface {
     JButton submit = new JButton("Submit");
     JTextField textfield1 = new JTextField("enter your input here.");
     JButton cancel = new JButton("Cancel");
+    
+    //Deduct Grade
+    JButton submit1 = new JButton("Submit");
+    JButton cancel1 = new JButton("Cancel");
     
     //Add Student
     JTextField enterNameTF = new JTextField(); 
@@ -125,15 +136,12 @@ public class UserInterface {
     //Edit Grade Component
     JComboBox tableList = new JComboBox();
     String selectedSection;  
-    JLabel enterName = new JLabel("Full Name (Temporary)");
+    JLabel enterName = new JLabel("Name");
     
     //View Student Grade
     JButton sgback = new JButton("Back");
 
-    
-    
     // UIMenu, aka the main screen
-    
     JPanel exit = new JPanel();
     JPanel minimize = new JPanel();
     JPanel title = new JPanel();
@@ -291,7 +299,46 @@ public class UserInterface {
                     gs.remove(bgs5);
                 }
             });
-            bgs4.addActionListener(new UIEditStudentGrade());
+            bgs4.addActionListener(new ActionListener()
+            {
+                
+                
+                public void actionPerformed(ActionEvent e)
+                {
+                    Connection con = null;
+                    Statement cst = null;
+                    UIDeductStudentGrade(); 
+                    try {
+                       
+                    String SQL = "SELECT PERFORMANCE_TASK FROM SECTIONSUBJECT";
+                    ResultSet rs; 
+                    String querySQL = "select PerformanceTask from Percentage";
+                    Statement qSTMT = con.createStatement();
+                    rs = qSTMT.executeQuery(querySQL);
+                    
+                    //con = DriverManager.getConnection(databaseURL);
+                    //String cal = "SELECT * FROM Percentage, "+sectionList.getSelectedItem()
+                    //+ " WHERE "+sectionList.getSelectedItem()+".PERFORMANCE_TASK * Percentage.PerformanceTask";
+                    //cst = con.prepareStatement(cal);
+                    
+                    while(rs.next())
+                    {
+                    int PTInteger = rs.getInt("PerformanceTask");
+                    
+                    int PerformanceTaskTotal = 0;
+                    
+                    PerformanceTaskTotal = PerformanceTaskTotal + PTInteger; 
+                    }
+                    
+                } catch (SQLException w) {
+                    w.printStackTrace();
+                }
+                }
+            });
+            //bgs4.addActionListener(new UIEditStudentGrade());
+            
+            //overall = pt * decimal
+            
             bgs5.addActionListener(new UIStudentGrade());
             bgs6.addActionListener(new ActionListener()
             {
@@ -402,14 +449,26 @@ public class UserInterface {
                     Connection ASTCon = DriverManager.getConnection(databaseURL);
                     Statement astST = ASTCon.createStatement();
                     
+                ResultSet data = dbm.getTables(null, null, "%", null);
+                while(data.next())
+                {
+                if(data.getString(3).equals("GENERICINSERT_PLACEHOLDER"))
+                {
+                    String sqlDELETE = "DROP GENERICINSERT_PLACEHOLDER";
+                    Statement stDEL = con.createStatement();
+                    stDEL.execute(sqlDELETE);
+                    stDEL.close();
+                }
+                }
+                     
                     String asSQL = "CREATE TABLE PLACEHOLDER "  +
-                                   "(id AUTOINCREMENT PRIMARY KEY, FULL_NAME varchar(255), PERFORMANCE_TASK float, WRITTEN_WORK float, LONG_TEST float, WEIGHTED_AVERAGE float"
+                                   "(id AUTOINCREMENT PRIMARY KEY, FULL_NAME varchar(255), PERFORMANCE_TASK double, WRITTEN_WORK double, LONG_TEST double, WEIGHTED_AVERAGE double "
                                  + ")";
                     String asSQL2 ="ALTER TABLE PLACEHOLDER" +
                                    " RENAME TO " + asec.getText();
                     String asSQL3 = " INSERT INTO SectionList(SECTION) VALUES(?)";
                     String asSQL4 = "CREATE TABLE " + asec.getText()+"GRADES "
-                            + "(ID int, PERFORMANCE_TASK float, WRITTEN_WORK float, LONG_TEST float, PRIMARY KEY(ID))";
+                            + "(ID varchar(255), PERFORMANCE_TASK double, WRITTEN_WORK double, LONG_TEST double, PRIMARY KEY(ID))";
                     
                     PreparedStatement asSQL4STMT = con.prepareStatement(asSQL4);
                     asSQL4STMT.execute();
@@ -426,11 +485,11 @@ public class UserInterface {
                     
                     
                     PreparedStatement astST2 = ASTCon.prepareStatement(asSQL3);
-                               
+                    
                     
                     
                     sectionList.addItem(asec.getText());
-
+                   
                     
                    
                    astST.execute(asSQL);
@@ -472,7 +531,12 @@ public class UserInterface {
                 {
                     p.printStackTrace();
                 }
-
+               
+                
+                
+                
+                
+                
                 }
             });
             
@@ -528,8 +592,6 @@ public class UserInterface {
         });
         }
 
-    
-        
         public class section implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             sectionList.addItem(asec.getText());
@@ -619,8 +681,10 @@ public class UserInterface {
             JLabel text1 = new JLabel("Select component type: ");
             JLabel text2 = new JLabel("Number: ");
             JLabel textScore = new JLabel("Score: ");
+            JLabel totalScore = new JLabel("Out of: ");
             
             JTextField textScorefield = new JTextField();
+            JTextField outOfField = new JTextField();
             JComboBox studentList = new JComboBox();
            
             try
@@ -638,18 +702,7 @@ public class UserInterface {
             {
                 e.printStackTrace();
             }
-            JComboBox numberList = new JComboBox();
             
-            numberList.addItem("1");
-            numberList.addItem("2");
-            numberList.addItem("3");
-            numberList.addItem("4");
-            numberList.addItem("5");
-            numberList.addItem("6");
-            numberList.addItem("7");
-            numberList.addItem("8");
-            numberList.addItem("9");
-            numberList.addItem("10");
             
             
             JComboBox componentList = new JComboBox();
@@ -664,97 +717,243 @@ public class UserInterface {
             text1.setBounds(20,10,150,20);
             text2.setBounds(20,60,150,20);
             textS.setBounds(20,80,150,20);
-            submit.setBounds(60,150,80,20);
-            cancel.setBounds(150,150,80,20);
+            submit.setBounds(60,170,80,20);
+            cancel.setBounds(150,170,80,20);
             textScore.setBounds(20,130,80,20);
+            totalScore.setBounds(20,150,80,20);
             textScorefield.setBounds(100,130,80,20);
+            outOfField.setBounds(100,150,80,20);
             studentList.setBounds(10,100,270,20);
             
+            numberList.addItem("1");
+                    numberList.addItem("2");
+                    numberList.addItem("3");
+                    numberList.addItem("4");
+                    numberList.addItem("5");
+                    numberList.addItem("6");
+                    numberList.addItem("7");
+                    numberList.addItem("8");
+                    numberList.addItem("9");
+                    numberList.addItem("10");
+            
+            String selectedComponent = (String)componentList.getSelectedItem();
             submit.addActionListener(new Submit()
             {
                 public void actionPerformed(ActionEvent e)
                 {
                 try
                 {
+                double PTTOTAL = 0;
+                //DIGGO HERE
+                
                 if( componentList.getSelectedItem() == "Performance Task" )
                 {
-                    String TFStringValue = textScorefield.getText();
-                    System.out.println("Stored value: " + TFStringValue);
+                String selectedNumber = (String)numberList.getSelectedItem();
+                System.out.println("THIS IS IT MAH FREN" + selectedNumber);   
+                String numberSQL ="UPDATE " +selectedSection + "GRADES SET PERFORMANCE_TASK = ? WHERE ID = " + selectedNumber;
+                // UPDATE A66GRADES SET PERFORMANCE TASK = GRADE WHERE ID=?;
+                PreparedStatement NUMBERSTMT = con.prepareStatement(numberSQL);
+                
+                
+                NUMBERSTMT.setString(1,outOfField.getText());
+                //NUMBERSTMT.setInt(2,finalselectedNumber);
+                NUMBERSTMT.executeUpdate();
+                }
+                else if (componentList.getSelectedItem() == "Written Works")
+                {
+                String selectedNumber = (String)numberList.getSelectedItem();
+               System.out.println("THIS IS IT MAH FREN" + selectedNumber);   
+                String numberSQL2 ="UPDATE " +selectedSection + "GRADES SET WRITTEN_WORK = ? WHERE ID = " + selectedNumber;
+                // UPDATE A66GRADES SET PERFORMANCE TASK = GRADE WHERE ID=?;
+                PreparedStatement NUMBERSTMT2 = con.prepareStatement(numberSQL2);
+
+                NUMBERSTMT2.setString(1,outOfField.getText());
+                //NUMBERSTMT.setInt(2,finalselectedNumber);
+                NUMBERSTMT2.executeUpdate();
+                }
+                else if (componentList.getSelectedItem() == "Long Test")
+                {
+                String selectedNumber = (String)numberList.getSelectedItem();
+                System.out.println("THIS IS IT MAH FREN" + selectedNumber);   
+                String numberSQL3 ="UPDATE " +selectedSection + "GRADES SET LONG_TEST = ? WHERE ID = " + selectedNumber;
+                // UPDATE A66GRADES SET PERFORMANCE TASK = GRADE WHERE ID=?;
+                PreparedStatement NUMBERSTMT3 = con.prepareStatement(numberSQL3);
+
+                NUMBERSTMT3.setString(1,outOfField.getText());
+                //NUMBERSTMT.setInt(2,finalselectedNumber);
+                NUMBERSTMT3.executeUpdate();
+                }
+
+                //TOTALSQL
+                String PT_TOTALSQL = "SELECT PERFORMANCE_TASK from " + selectedSection + "GRADES";
+                Statement PTSTMT = con.createStatement();
+                ResultSet PTRS = PTSTMT.executeQuery(PT_TOTALSQL);
+                
+                while(PTRS.next())
+                {
+                    PTTOTAL = PTTOTAL + PTRS.getDouble("PERFORMANCE_TASK");
+                    
+                }
+                System.out.println(PTTOTAL);
+                
+          
+                String LT_TOTALSQL = "SELECT LONG_TEST from " + selectedSection + "GRADES";
+                Statement LTSTMT = con.createStatement();
+                ResultSet LTRS = LTSTMT.executeQuery(LT_TOTALSQL);
+                 double LTTOTAL= 0;
+                while(LTRS.next())
+                {
+                    LTTOTAL = LTTOTAL + LTRS.getDouble("LONG_TEST");
+                    
+                }
+
+                String WW_TOTALSQL = "SELECT WRITTEN_WORK from " + selectedSection + "GRADES";
+                Statement WWSTMT = con.createStatement();
+                ResultSet WWRS = WWSTMT.executeQuery(WW_TOTALSQL);
+                 double WWTOTAL= 0;
+                while(WWRS.next())
+                {
+                    WWTOTAL = WWTOTAL + WWRS.getDouble("WRITTEN_WORK");
+                    
+                }
+
+                String percentAssign = "SELECT * from Percentage";
+                Statement setmet = con.createStatement();
+                ResultSet rse = setmet.executeQuery(percentAssign);
+                double PTPercentage;
+                double LTPercentage;
+                double WWPercentage;
+                double weightedAvg;
+                
+                String PTPercentageString = null;
+                String LTPercentageString = null;
+                String WWPercentageString = null;
+                String weightedAvgString;
+                while(rse.next())
+                {
+                    PTPercentageString = rse.getString("PerformanceTask");
+                    LTPercentageString = rse.getString("Test");
+                    WWPercentageString = rse.getString("WrittenWork");
+                }
+                
+                PTPercentage = Double.parseDouble(PTPercentageString);
+                LTPercentage = Double.parseDouble(LTPercentageString);
+                WWPercentage = Double.parseDouble(WWPercentageString);
+                
+                System.out.println(PTPercentage);
+                System.out.println(LTPercentage);
+                System.out.println(WWPercentage);
+                String selectedName = (String)studentList.getSelectedItem();
+                
+                System.out.println(selectedName);
+                System.out.println(selectedSection);
+                String getGradesSQL = "SELECT * from " + selectedSection + " WHERE FULL_NAME = ?";
+                PreparedStatement setmet2 = con.prepareStatement(getGradesSQL);
+                
+                setmet2.setString(1,selectedName);
+                ResultSet rse2 = setmet2.executeQuery();
+                
+                double PTGrade = 0;
+                double LTGrade = 0;
+                double WWGrade = 0;
+                
+                while(rse2.next())
+                {
+                  PTGrade = rse2.getDouble("PERFORMANCE_TASK");
+                  LTGrade = rse2.getDouble("LONG_TEST");
+                  WWGrade = rse2.getDouble("WRITTEN_WORK");
+                  
+                }
+                String overallUpdateSQL = "UPDATE " + selectedSection + " SET WEIGHTED_AVERAGE = ? WHERE FULL_NAME = ?";
+                
+                PreparedStatement overallUpdate = con.prepareStatement(overallUpdateSQL);
+                //System.out.println(PTTOTAL);
+                PTGrade = PTGrade / PTTOTAL;
+                PTGrade = PTGrade * 100;
+                //System.out.println(PTGrade);
+                PTGrade = PTGrade * PTPercentage;
+                //System.out.println(PTGrade);
+                LTGrade = LTGrade / LTTOTAL;
+                LTGrade = LTGrade * 100;
+                //System.out.println(LTGrade);
+                LTGrade = LTGrade * PTPercentage;
+                //System.out.println(LTGrade);
+                
+                WWGrade = WWGrade/ WWTOTAL;
+                WWGrade = WWGrade * 100;
+                 //System.out.println(WWGrade);
+                WWGrade = WWGrade * WWPercentage;
+                 //System.out.println(WWGrade);
+                DecimalFormat df = new DecimalFormat("#.##"); 
+                
+                
+               
+                weightedAvg =  PTGrade + LTGrade + WWGrade;//+  (LTGrade * LTPercentage) + (WWGrade * WWPercentage); //+ (WWGrade * WWPercentage);
+                weightedAvg = Double.valueOf(df.format(weightedAvg));
+                System.out.println("THIS WA: " + weightedAvg);
+                double Na = 0;
+                double Na2 = 0.2;
+                System.out.println("DOUBLE TEST" + ((Na * Na2) + (Na * Na2)));
+                overallUpdate.setDouble(1, weightedAvg);
+                overallUpdate.setString(2,selectedName);
+                
+                overallUpdate.executeUpdate();
+                
+                
+                
+                
+                    
+                if( componentList.getSelectedItem() == "Performance Task" )
+                {
+                    String TFStringValuea1 = textScorefield.getText();
+                    System.out.println("Stored value: " + TFStringValuea1);
                     System.out.println(textScorefield.getText());
-                    String sql = "UPDATE " + selectedSection + " SET PERFORMANCE_TASK = PERFORMANCE_TASK - ? WHERE FULL_NAME = ?";
+                    String sql = "UPDATE " + selectedSection + " SET PERFORMANCE_TASK = PERFORMANCE_TASK + ? WHERE FULL_NAME = ?";
                     
-                    
-                    String NumberVal = numberList.getSelectedItem().toString();
                     PreparedStatement AddGradeST = con.prepareStatement(sql);
                     
-                    
-                    
-                    float intScoreTF = Float.parseFloat(TFStringValue);
-                    int intNumber = Integer.parseInt(NumberVal);
-                    
-                    
-                    String sq2 = "UPDATE " + selectedSection +"GRADES SET PERFORMANCE_TASK = ? WHERE ID = ?";
-                    PreparedStatement SectionGradesT = con.prepareStatement(sq2);
-                    SectionGradesT.setFloat(1,intScoreTF);
-                    SectionGradesT.setInt(2,intNumber);
-                    SectionGradesT.executeUpdate();
-                    
-                    AddGradeST.setFloat(1, intScoreTF);
+                    double intScoreTF = Double.parseDouble(TFStringValuea1);
+                    AddGradeST.setDouble(1, intScoreTF);
                     AddGradeST.setString(2,(String)studentList.getSelectedItem());
                     
                     AddGradeST.executeUpdate();
- 
                 }
                 else if ( componentList.getSelectedItem() == "Long Test")
                 {
-                    String TFStringValue = textScorefield.getText();
-                    System.out.println("Stored value: " + TFStringValue);
+                    String TFStringValuea2 = textScorefield.getText();
+                    System.out.println("Stored value: " + TFStringValuea2);
                     System.out.println(textScorefield.getText());
                     String sql = "UPDATE " + selectedSection + " SET LONG_TEST = LONG_TEST + ? WHERE FULL_NAME = ?";
                     PreparedStatement AddGradeST = con.prepareStatement(sql);
                     
-                    float intScoreTF = Float.parseFloat(TFStringValue);
-                    AddGradeST.setFloat(1, intScoreTF);
+                    double intScoreTF = Double.parseDouble(TFStringValuea2);
+                    AddGradeST.setDouble(1, intScoreTF);
                     AddGradeST.setString(2,(String)studentList.getSelectedItem());
-                    String NumberVal = numberList.getSelectedItem().toString();
-                    int intNumber = Integer.parseInt(NumberVal);
-                    String sq2 = "UPDATE " + selectedSection +"GRADES SET LONG_TEST = ? WHERE ID = ?";
-                    PreparedStatement SectionGradesT = con.prepareStatement(sq2);
-                    SectionGradesT.setFloat(1,intScoreTF);
-                    SectionGradesT.setInt(2,intNumber);
-                    SectionGradesT.executeUpdate();
+                    
                     AddGradeST.executeUpdate();
                 }
                 else if ( componentList.getSelectedItem() == "Written Works")
                 {
-                    String TFStringValue = textScorefield.getText();
-                    System.out.println("Stored value: " + TFStringValue);
+                    String TFStringValuea3 = textScorefield.getText();
+                    System.out.println("Stored value: " + TFStringValuea3);
                     System.out.println(textScorefield.getText());
                     String sql = "UPDATE " + selectedSection + " SET WRITTEN_WORK = WRITTEN_WORK + ? WHERE FULL_NAME = ?";
                     PreparedStatement AddGradeST = con.prepareStatement(sql);
                     
-                    float intScoreTF = Float.parseFloat(TFStringValue);
-                    AddGradeST.setFloat(1, intScoreTF);
+                    double intScoreTF = Double.parseDouble(TFStringValuea3);
+                    AddGradeST.setDouble(1, intScoreTF);
                     AddGradeST.setString(2,(String)studentList.getSelectedItem());
-                    AddGradeST.executeUpdate();
-                    AddGradeST.setFloat(1, intScoreTF);
-                    AddGradeST.setString(2,(String)studentList.getSelectedItem());
-                    String NumberVal = numberList.getSelectedItem().toString();
-                    int intNumber = Integer.parseInt(NumberVal);
-                    String sq2 = "UPDATE " + selectedSection +"GRADES SET WRITTEN_WORK = ? WHERE ID = ?";
-                    PreparedStatement SectionGradesT = con.prepareStatement(sq2);
-                    SectionGradesT.setFloat(1,intScoreTF);
-                    SectionGradesT.setInt(2,intNumber);
-                    SectionGradesT.executeUpdate();
-                    AddGradeST.executeUpdate();
                     
-                }
-                }
-                catch(Exception f)
-                {
-                    f.printStackTrace();
+                    AddGradeST.executeUpdate();
                 }
                 
+                
+                
+                }
+                catch (SQLException bruh)
+                {
+                    bruh.printStackTrace();
+                }
                 }
             });
             cancel.addActionListener(new ActionListener()
@@ -789,6 +988,10 @@ public class UserInterface {
             ag.add(textScore);
             ag.setLocationRelativeTo(null);
             ag.setVisible(true);
+            ag.add(totalScore);
+            ag.add(textScore);
+            ag.add(textScorefield);
+            ag.add(outOfField);
             
             ag.addWindowListener(new WindowAdapter() 
             {
@@ -883,13 +1086,13 @@ public class UserInterface {
                 PreparedStatement UpdateSTMT2 = con.prepareStatement(sqlUpdatePercentage2);
                 PreparedStatement UpdateSTMT3 = con.prepareStatement(sqlUpdatePercentage3);
                 
-                float ParsePT = Float.parseFloat(pt.getText());
-                float ParseWW = Float.parseFloat(ww.getText());
-                float ParseLT = Float.parseFloat(lt.getText());
+                double ParsePT = Double.parseDouble(pt.getText());
+                double ParseWW = Double.parseDouble(ww.getText());
+                double ParseLT = Double.parseDouble(lt.getText());
                 
-                float percentDecimal1 = ParsePT / 100;
-                float percentDecimal2 = ParseWW / 100;
-                float percentDecimal3 = ParseLT / 100;       
+                double percentDecimal1 = ParsePT / 100;
+                double percentDecimal2 = ParseWW / 100;
+                double percentDecimal3 = ParseLT / 100;       
                 
                 String PT = String.valueOf(percentDecimal1);
                 String WW = String.valueOf(percentDecimal2);
@@ -937,17 +1140,345 @@ public class UserInterface {
             egc.setLocationRelativeTo(null);
         }
         
-        public void UIEditStudentGrade(){
+        public void UIDeductStudentGrade(){
+            JLabel textS = new JLabel("Select Student: ");
+            JLabel text1 = new JLabel("Select component type: ");
+            JLabel text2 = new JLabel("Number: ");
+            JLabel textScore = new JLabel("Score: ");
+            JLabel totalScore = new JLabel("Out of: ");
             
-            addSubj.setBounds(15,60,110,20);
-            assSubj.setBounds(15,90,110,20);
-            SubjTF.setBounds(130,60,130,20);
-            subjectList.setBounds(160,90,110,20);
+            JTextField textScorefield = new JTextField();
+            JTextField outOfField = new JTextField();
+            JComboBox studentList = new JComboBox();
+           
+            try
+            {
+            PreparedStatement studentST;
+            String studentSQL = "SELECT FULL_NAME FROM " + selectedSection;
+            studentST = con.prepareStatement(studentSQL);
+            ResultSet studentRS = studentST.executeQuery();
+            while(studentRS.next())
+            {
+                studentList.addItem(studentRS.getString("FULL_NAME"));
+            }
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
             
-            esg.add(addSubj);
-            esg.add(SubjTF);
-            esg.add(assSubj);
-            esg.add(subjectList);
+            
+            
+            JComboBox componentList = new JComboBox();
+            componentList.addItem("Performance Task");
+            componentList.addItem("Long Test");
+            componentList.addItem("Written Works");
+            
+            componentList.setBounds(20,30,150,20);
+            numberList.setBounds(80,60,50,20);
+            
+            textfield1.setBounds(150,10,120,20);
+            text1.setBounds(20,10,150,20);
+            text2.setBounds(20,60,150,20);
+            textS.setBounds(20,80,150,20);
+            submit.setBounds(60,170,80,20);
+            cancel.setBounds(150,170,80,20);
+            textScore.setBounds(20,130,80,20);
+            totalScore.setBounds(20,150,80,20);
+            textScorefield.setBounds(100,130,80,20);
+            outOfField.setBounds(100,150,80,20);
+            studentList.setBounds(10,100,270,20);
+            
+            numberList.addItem("1");
+                    numberList.addItem("2");
+                    numberList.addItem("3");
+                    numberList.addItem("4");
+                    numberList.addItem("5");
+                    numberList.addItem("6");
+                    numberList.addItem("7");
+                    numberList.addItem("8");
+                    numberList.addItem("9");
+                    numberList.addItem("10");
+            
+            String selectedComponent = (String)componentList.getSelectedItem();
+            submit.addActionListener(new Submit()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                try
+                {
+                double PTTOTAL = 0;
+                //DIGGO HERE
+                
+                if( componentList.getSelectedItem() == "Performance Task" )
+                {
+                String selectedNumber = (String)numberList.getSelectedItem();
+                System.out.println("THIS IS IT MAH FREN" + selectedNumber);   
+                String numberSQL ="UPDATE " +selectedSection + "GRADES SET PERFORMANCE_TASK = ? WHERE ID = " + selectedNumber;
+                // UPDATE A66GRADES SET PERFORMANCE TASK = GRADE WHERE ID=?;
+                PreparedStatement NUMBERSTMT = con.prepareStatement(numberSQL);
+                
+                
+                NUMBERSTMT.setString(1,outOfField.getText());
+                //NUMBERSTMT.setInt(2,finalselectedNumber);
+                NUMBERSTMT.executeUpdate();
+                }
+                else if (componentList.getSelectedItem() == "Written Works")
+                {
+                String selectedNumber = (String)numberList.getSelectedItem();
+               System.out.println("THIS IS IT MAH FREN" + selectedNumber);   
+                String numberSQL2 ="UPDATE " +selectedSection + "GRADES SET WRITTEN_WORK = ? WHERE ID = " + selectedNumber;
+                // UPDATE A66GRADES SET PERFORMANCE TASK = GRADE WHERE ID=?;
+                PreparedStatement NUMBERSTMT2 = con.prepareStatement(numberSQL2);
+
+                NUMBERSTMT2.setString(1,outOfField.getText());
+                //NUMBERSTMT.setInt(2,finalselectedNumber);
+                NUMBERSTMT2.executeUpdate();
+                }
+                else if (componentList.getSelectedItem() == "Long Test")
+                {
+                String selectedNumber = (String)numberList.getSelectedItem();
+                System.out.println("THIS IS IT MAH FREN" + selectedNumber);   
+                String numberSQL3 ="UPDATE " +selectedSection + "GRADES SET LONG_TEST = ? WHERE ID = " + selectedNumber;
+                // UPDATE A66GRADES SET PERFORMANCE TASK = GRADE WHERE ID=?;
+                PreparedStatement NUMBERSTMT3 = con.prepareStatement(numberSQL3);
+
+                NUMBERSTMT3.setString(1,outOfField.getText());
+                //NUMBERSTMT.setInt(2,finalselectedNumber);
+                NUMBERSTMT3.executeUpdate();
+                }
+
+                //TOTALSQL
+                String PT_TOTALSQL = "SELECT PERFORMANCE_TASK from " + selectedSection + "GRADES";
+                Statement PTSTMT = con.createStatement();
+                ResultSet PTRS = PTSTMT.executeQuery(PT_TOTALSQL);
+                
+                while(PTRS.next())
+                {
+                    PTTOTAL = PTTOTAL + PTRS.getDouble("PERFORMANCE_TASK");
+                    
+                }
+                System.out.println(PTTOTAL);
+                
+          
+                String LT_TOTALSQL = "SELECT LONG_TEST from " + selectedSection + "GRADES";
+                Statement LTSTMT = con.createStatement();
+                ResultSet LTRS = LTSTMT.executeQuery(LT_TOTALSQL);
+                 double LTTOTAL= 0;
+                while(LTRS.next())
+                {
+                    LTTOTAL = LTTOTAL + LTRS.getDouble("LONG_TEST");
+                    
+                }
+
+                String WW_TOTALSQL = "SELECT WRITTEN_WORK from " + selectedSection + "GRADES";
+                Statement WWSTMT = con.createStatement();
+                ResultSet WWRS = WWSTMT.executeQuery(WW_TOTALSQL);
+                 double WWTOTAL= 0;
+                while(WWRS.next())
+                {
+                    WWTOTAL = WWTOTAL + WWRS.getDouble("WRITTEN_WORK");
+                    
+                }
+
+                String percentAssign = "SELECT * from Percentage";
+                Statement setmet = con.createStatement();
+                ResultSet rse = setmet.executeQuery(percentAssign);
+                double PTPercentage;
+                double LTPercentage;
+                double WWPercentage;
+                double weightedAvg;
+                
+                String PTPercentageString = null;
+                String LTPercentageString = null;
+                String WWPercentageString = null;
+                String weightedAvgString;
+                while(rse.next())
+                {
+                    PTPercentageString = rse.getString("PerformanceTask");
+                    LTPercentageString = rse.getString("Test");
+                    WWPercentageString = rse.getString("WrittenWork");
+                }
+                
+                PTPercentage = Double.parseDouble(PTPercentageString);
+                LTPercentage = Double.parseDouble(LTPercentageString);
+                WWPercentage = Double.parseDouble(WWPercentageString);
+                
+                System.out.println(PTPercentage);
+                System.out.println(LTPercentage);
+                System.out.println(WWPercentage);
+                String selectedName = (String)studentList.getSelectedItem();
+                
+                System.out.println(selectedName);
+                System.out.println(selectedSection);
+                String getGradesSQL = "SELECT * from " + selectedSection + " WHERE FULL_NAME = ?";
+                PreparedStatement setmet2 = con.prepareStatement(getGradesSQL);
+                
+                setmet2.setString(1,selectedName);
+                ResultSet rse2 = setmet2.executeQuery();
+                
+                double PTGrade = 0;
+                double LTGrade = 0;
+                double WWGrade = 0;
+                
+                while(rse2.next())
+                {
+                  PTGrade = rse2.getDouble("PERFORMANCE_TASK");
+                  LTGrade = rse2.getDouble("LONG_TEST");
+                  WWGrade = rse2.getDouble("WRITTEN_WORK");
+                  
+                }
+                String overallUpdateSQL = "UPDATE " + selectedSection + " SET WEIGHTED_AVERAGE = ? WHERE FULL_NAME = ?";
+                
+                PreparedStatement overallUpdate = con.prepareStatement(overallUpdateSQL);
+                //System.out.println(PTTOTAL);
+                PTGrade = PTGrade / PTTOTAL;
+                PTGrade = PTGrade * 100;
+                //System.out.println(PTGrade);
+                PTGrade = PTGrade * PTPercentage;
+                //System.out.println(PTGrade);
+                LTGrade = LTGrade / LTTOTAL;
+                LTGrade = LTGrade * 100;
+                //System.out.println(LTGrade);
+                LTGrade = LTGrade * PTPercentage;
+                //System.out.println(LTGrade);
+                
+                WWGrade = WWGrade/ WWTOTAL;
+                WWGrade = WWGrade * 100;
+                 //System.out.println(WWGrade);
+                WWGrade = WWGrade * WWPercentage;
+                 //System.out.println(WWGrade);
+                DecimalFormat df = new DecimalFormat("#.##"); 
+                
+                
+               
+                weightedAvg =  PTGrade + LTGrade + WWGrade;//+  (LTGrade * LTPercentage) + (WWGrade * WWPercentage); //+ (WWGrade * WWPercentage);
+                weightedAvg = Double.valueOf(df.format(weightedAvg));
+                System.out.println("THIS WA: " + weightedAvg);
+                double Na = 0;
+                double Na2 = 0.2;
+                System.out.println("DOUBLE TEST" + ((Na * Na2) + (Na * Na2)));
+                overallUpdate.setDouble(1, weightedAvg);
+                overallUpdate.setString(2,selectedName);
+                
+                overallUpdate.executeUpdate();
+                
+                
+                
+                
+                    
+                if( componentList.getSelectedItem() == "Performance Task" )
+                {
+                    String TFStringValuea1 = textScorefield.getText();
+                    System.out.println("Stored value: " + TFStringValuea1);
+                    System.out.println(textScorefield.getText());
+                    String sql = "UPDATE " + selectedSection + " SET PERFORMANCE_TASK = PERFORMANCE_TASK - ? WHERE FULL_NAME = ?";
+                    
+                    PreparedStatement AddGradeST = con.prepareStatement(sql);
+                    
+                    double intScoreTF = Double.parseDouble(TFStringValuea1);
+                    AddGradeST.setDouble(1, intScoreTF);
+                    AddGradeST.setString(2,(String)studentList.getSelectedItem());
+                    
+                    AddGradeST.executeUpdate();
+                }
+                else if ( componentList.getSelectedItem() == "Long Test")
+                {
+                    String TFStringValuea2 = textScorefield.getText();
+                    System.out.println("Stored value: " + TFStringValuea2);
+                    System.out.println(textScorefield.getText());
+                    String sql = "UPDATE " + selectedSection + " SET LONG_TEST = LONG_TEST - ? WHERE FULL_NAME = ?";
+                    PreparedStatement AddGradeST = con.prepareStatement(sql);
+                    
+                    double intScoreTF = Double.parseDouble(TFStringValuea2);
+                    AddGradeST.setDouble(1, intScoreTF);
+                    AddGradeST.setString(2,(String)studentList.getSelectedItem());
+                    
+                    AddGradeST.executeUpdate();
+                }
+                else if ( componentList.getSelectedItem() == "Written Works")
+                {
+                    String TFStringValuea3 = textScorefield.getText();
+                    System.out.println("Stored value: " + TFStringValuea3);
+                    System.out.println(textScorefield.getText());
+                    String sql = "UPDATE " + selectedSection + " SET WRITTEN_WORK = WRITTEN_WORK - ? WHERE FULL_NAME = ?";
+                    PreparedStatement AddGradeST = con.prepareStatement(sql);
+                    
+                    double intScoreTF = Double.parseDouble(TFStringValuea3);
+                    AddGradeST.setDouble(1, intScoreTF);
+                    AddGradeST.setString(2,(String)studentList.getSelectedItem());
+                    
+                    AddGradeST.executeUpdate();
+                }
+                
+                
+                
+                }
+                catch (SQLException bruh)
+                {
+                    bruh.printStackTrace();
+                }
+                }
+            });
+            cancel.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                ds.remove(text1);
+                ds.remove(textfield1);
+                ds.remove(submit);
+                ds.remove(cancel);
+                ds.remove(numberList);
+                ds.remove(componentList);
+                ds.remove(textS);
+                ds.remove(text2);
+                ds.remove(textScorefield);
+                ds.remove(textScore);
+                ds.setVisible(false);
+                cancel.removeActionListener(this);
+                }
+            });
+            ds.add(studentList);
+            ds.add(numberList);
+            ds.add(componentList);
+            ds.setLayout(null);
+            ds.setSize(300,250);
+            ds.add(text1);
+            ds.add(textS);
+            ds.add(text2);
+            ds.add(submit);
+            ds.add(cancel);
+            ds.add(textScorefield);
+            ds.add(textScore);
+            ds.setLocationRelativeTo(null);
+            ds.setVisible(true);
+            ds.add(totalScore);
+            ds.add(textScore);
+            ds.add(textScorefield);
+            ds.add(outOfField);
+            
+            ds.addWindowListener(new WindowAdapter() 
+            {
+                @Override
+                public void windowClosing(WindowEvent e) 
+                {
+                System.out.println("WindowClosingDemo.windowClosing");
+                ds.remove(text1);
+                ds.remove(textfield1);
+                ds.remove(submit);
+                ds.remove(cancel);
+                ds.remove(numberList);
+                ds.remove(componentList);
+                ds.remove(textS);
+                ds.remove(text2);
+                ds.remove(textScorefield);
+                ds.remove(textScore);
+                ds.removeWindowListener(this);
+                
+                }
+            });
+            
+            
             
             assSubj.addActionListener(new ActionListener()
             {
@@ -1009,14 +1540,14 @@ public class UserInterface {
                 }   
             });
             
-            esg.setLocationRelativeTo(null);
-            esg.setLayout(null);
-            esg.setVisible(true);
-            esg.setSize(300,200);
+            ds.setLocationRelativeTo(null);
+            ds.setLayout(null);
+            ds.setVisible(true);
+            ds.setSize(300,300);
         }
         
         public void UIStudentGrade() {
-            DefaultTableModel cn = new DefaultTableModel(new String[]{"ID", "Fullname", "WrittenWork", "PerformanceTask", "Test"}, 0);
+            DefaultTableModel cn = new DefaultTableModel(new String[]{"ID", "Fullname", "WrittenWork", "PerformanceTask", "Test", "Overall"}, 0);
             JTable sgtb = new JTable(cn);
             
             String databaseURL = "jdbc:ucanaccess://src/resources/GradingSystem.accdb";
@@ -1039,13 +1570,12 @@ public class UserInterface {
                 String c = rs.getString("WRITTEN_WORK");
                 String d = rs.getString("PERFORMANCE_TASK");
                 String e = rs.getString("LONG_TEST");
-                cn.addRow(new Object[]{a, b, c, d, e});
+                String f = rs.getString("WEIGHTED_AVERAGE");
+                cn.addRow(new Object[]{a, b, c, d, e, f});
             }    
                 
             } catch (SQLException e) {
-            
                 e.printStackTrace();
-            
             }
             
             JScrollPane egcsp = new JScrollPane(sgtb);
@@ -1212,7 +1742,7 @@ public class UserInterface {
         @Override
             public void actionPerformed(ActionEvent e) {
                 bgs4 = (JButton)e.getSource();
-                UIEditStudentGrade();
+                UIDeductStudentGrade();
             }
         }
         
